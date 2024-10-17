@@ -1,0 +1,17 @@
+{
+  "name": "roi_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "dev": "nodemon app.js"
+  },
+  "author": "Alan Estrada",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongoose": "^8.7.2",
+    "nodemon": "^3.1.7"
+  }
+}
