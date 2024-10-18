@@ -1,0 +1,4 @@
+/roi-backend/node_modules
+/roi-backend/.env
+/roi-backend/*.env
+/roi-backend/.env*
