@@ -2,3 +2,4 @@
 /roi-backend/.env
 /roi-backend/*.env
 /roi-backend/.env*
+/roi-backend/uploads

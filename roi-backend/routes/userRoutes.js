@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { getUser, saveUser } = require('./../controllers/userController')
+const { login, changePassword, updateProfile, upload } = require('./../controllers/userController')
+const { authenticateToken } = require('../middleware/authMiddleware');
 
-router.get('/', getUser);
-router.post('/', saveUser);
+
+router.post('/login', login);
+router.patch('/change-password', authenticateToken, changePassword);
+router.put('/update-profile', authenticateToken, upload.single('image'), updateProfile);
+
 
 module.exports = router;
