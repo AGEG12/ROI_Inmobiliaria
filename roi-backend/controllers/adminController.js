@@ -1,21 +1,7 @@
 const User = require('../models/User');
 const Property = require('../models/Property');
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
-// Configuración del almacenamiento
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/profile_pictures/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage });
-
 
 const createUser = async (req, res) => {
     try {
@@ -34,7 +20,7 @@ const createUser = async (req, res) => {
             password,
             role,
             fk_admin,
-            profile_picture: req.file ? `/uploads/profile_pictures/${req.file.filename}` : null
+            profile_picture: req.file ? req.file.filename : null
         });
         await user.save();
         res.status(201).json({ message: 'Usuario registrado exitosamente' });
@@ -54,7 +40,7 @@ const updateUser = async (req, res) => {
                 surname,
                 phone,
                 email,
-                profile_picture: req.file ? `/uploads/profile_pictures/${req.file.filename}` : currentPP,
+                profile_picture: req.file ? req.file.filename : currentPP,
                 role
             },
             { new: true }
@@ -82,7 +68,7 @@ const deleteUser = async (req, res) => {
         }
         
         if (user.profile_picture) {
-            const imagePath = path.join(__dirname, '..', user.profile_picture);
+            const imagePath = path.join(__dirname, '..', 'uploads', 'profile_pictures', user.profile_picture);
             fs.unlink(imagePath, (err) => {
                 if (err) {
                     console.error("Error al eliminar la imagen de perfil:", err);
@@ -111,4 +97,4 @@ const dashboard = (req, res) => {
     });
 }
 
-module.exports = { createUser, updateUser, deleteUser, dashboard, upload };
+module.exports = { createUser, updateUser, deleteUser, dashboard };

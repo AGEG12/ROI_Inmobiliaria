@@ -1,21 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
-const path = require('path');
-
-// Configuración del almacenamiento
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/profile_pictures/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage });
-
 
 const login = async (req, res) => {
     try {
@@ -77,7 +62,7 @@ const updateProfile = async (req, res) => {
                 surname,
                 phone,
                 email,
-                profile_picture: req.file ? `/uploads/profile_pictures/${req.file.filename}` : currentPP, 
+                profile_picture: req.file ? req.file.filename : currentPP, 
             },
             { new: true }
         );
@@ -93,4 +78,4 @@ const updateProfile = async (req, res) => {
 };
 
 
-module.exports = { login, changePassword, updateProfile, upload };
+module.exports = { login, changePassword, updateProfile };

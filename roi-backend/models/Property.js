@@ -1,15 +1,28 @@
 const mongoose = require('mongoose');
 
 const PropertySchema = new mongoose.Schema({
-  type_property: String,
-  deal: String,
+  type_property: {
+    type: String,
+    enum: ['Casa', 'Apartamento','Terreno','Local Comercial','Edificio', 'Bodega', 'Otro'],
+  },
+  deal: {
+    type: String,
+    enum: ['Venta', 'Renta', 'Otro'],
+  },
   title: String,
   description: String,
   price: Number,
+  payment_periodicity: {
+    type: String,
+    enum: ['N/A','Mensual', 'Semanal','Por día','Anual'],
+  },
   land_area: Number,
   constructed_meters: Number,
   location: String,
-  social_classification_area: String,
+  social_classification_area: {
+    type: String,
+    enum: ['Zona urbana','Residencial', 'Interés social', 'Campestre','Rural'],
+  },
   features: {
     number_bedrooms: Number,
     number_bathrooms: Number,
@@ -17,7 +30,11 @@ const PropertySchema = new mongoose.Schema({
     garage_description: String,
     additional_notes: String
   },
-  status: String,
+  status: {
+    type: String,
+    enum: ['Disponible','No Disponible'],
+    default: 'Disponible',
+  },
   agreed_commission: {
     percentage: Number,
     amount: Number,
