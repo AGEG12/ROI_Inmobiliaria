@@ -1,4 +1,5 @@
 const Property = require('../models/Property');
+const Transaction = require('../models/Transaction');
 const { uploadPI } = require('../middleware/multerMiddleware');
 const path = require('path');
 const fs = require('fs');
@@ -51,7 +52,13 @@ const getProperty = async (req, res) => {
     try {
         const propertyId = req.params.id;
         const property = await Property.findById(propertyId);
-        res.json({ property });
+        if (!property) {
+            return res.status(404).json({ message: "Propiedad no encontrada" });
+        }
+        const transaction = await Transaction.findOne( { fk_property: propertyId } );
+        const transactionId = !transaction ?  null : transaction._id;
+
+        res.json({ property, transactionId });
     } catch (error) {
         res.status(500).json({ message: "Error al obtener la propiedad", error });
     }
@@ -59,7 +66,7 @@ const getProperty = async (req, res) => {
 
 // Postman no envía nada al req.body si usamos from-data
 const updateProperty = async (req, res) => {
-    try {
+        try {
         const propertyId = req.params.id;
         const property = await Property.findById(propertyId);
         if (!property) {
@@ -67,6 +74,10 @@ const updateProperty = async (req, res) => {
         }
         if (property.fk_advisor.toString() !== req.user.id) {
             return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
+        }
+        const transaction = await Transaction.findOne( { fk_property: propertyId } );
+        if ( transaction ) {
+            return res.status(403).json({ message: "No es posible editar una propiedad relacionada a una transacción" });
         }
 
         const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, location, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
@@ -114,6 +125,10 @@ const deleteProperty = async (req, res) => {
         }
         if (property.fk_advisor.toString() !== req.user.id) {
             return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
+        }
+        const transaction = await Transaction.findOne( { fk_property: propertyId } );
+        if ( transaction ) {
+            return res.status(403).json({ message: "No es posible eliminar una propiedad relacionada a una transacción" });
         }
 
         property.images.forEach(imageName => {

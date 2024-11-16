@@ -10,7 +10,22 @@ const storagePP = multer.diskStorage({
         cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
-const uploadPP = multer({ storage: storagePP });
+const fileFilterImg = (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    if (mimetype && extname) {
+        return cb(null, true);
+    }
+    cb('Error: Solo se permiten archivos de imagen');
+}
+
+const uploadPP = multer({
+    storage: storagePP,
+    fileFilter: fileFilterImg,
+    limits: { fileSize: 5 * 1024 * 1024 }
+});
+
 
 const storagePI = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -23,7 +38,31 @@ const storagePI = multer.diskStorage({
 });
 const uploadPI = multer({
     storage: storagePI,
+    fileFilter: fileFilterImg,
     limits: { fileSize: 5 * 1024 * 1024 },
 }).array("images", 12);
 
-module.exports = { uploadPP, uploadPI };
+
+const storageTF = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/transaction_files');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    },
+});
+const fileFilterTF = (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+        cb(null, true);
+    } else {
+        cb(new Error("Solo se permiten archivos PDF"), false);
+    }
+};
+const uploadTF = multer({
+    storage: storageTF,
+    fileFilter: fileFilterTF,
+    limits: { fileSize: 25 * 1024 * 1024 },
+});
+
+module.exports = { uploadPP, uploadPI, uploadTF };

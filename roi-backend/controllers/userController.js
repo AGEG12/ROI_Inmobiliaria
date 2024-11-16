@@ -26,6 +26,19 @@ const login = async (req, res) => {
     }
 };
 
+const getUser = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        res.json({ user });
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener el usuario", error });
+    }
+}
+
 // Funcionalidad con problemas
 const changePassword = async (req, res) => {
     try {
@@ -78,4 +91,4 @@ const updateProfile = async (req, res) => {
 };
 
 
-module.exports = { login, changePassword, updateProfile };
+module.exports = { login, getUser, changePassword, updateProfile };
