@@ -13,11 +13,16 @@ const transactionSchema = mongoose.Schema({
   },
   deal: {
     type: String,
-    enum: ['venta', 'renta'],
+    enum: ['Venta', 'Renta', 'Otro'],
     required: true
   },
   amount: {
     type: Number,
+    required: true
+  },
+  payment_periodicity: {
+    type: String,
+    enum: ['Mensual', 'Semanal','Por día','Anual','Pago único'],
     required: true
   },
   commission: {
@@ -33,13 +38,16 @@ const transactionSchema = mongoose.Schema({
     {
       name: {
         type: String,
+        required: true
       },
       filename: {
         type: String,
+        required: true
       },
       upload_date: {
         type: Date,
         default: Date.now,
+        required: true
       },
     },
   ],

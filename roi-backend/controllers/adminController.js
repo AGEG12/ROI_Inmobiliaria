@@ -1,7 +1,35 @@
 const User = require('../models/User');
 const Property = require('../models/Property');
+const Transaction = require('../models/Transaction');
 const path = require('path');
 const fs = require('fs');
+
+const getUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener usuarios", error });
+    }
+}
+
+const getProperties = async (req, res) => {
+    try {
+        const properties = await Property.find();
+        res.json(properties);
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener propiedades", error });
+    }
+}
+
+const getTransactions = async (req, res) => {
+    try {
+        const transaction = await Transaction.find();
+        res.json(transaction);
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener transacciones", error });
+    }
+}
 
 const createUser = async (req, res) => {
     try {
@@ -31,25 +59,38 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { name, surname, phone, email, role, currentPP } = req.body;
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        const { name, surname, phone, email, role } = req.body;
+        let profile_picture;
+        if (req.file) {
+            profile_picture = req.file.filename;
+            if (user.profile_picture) {
+                const imagePath = path.join(__dirname, '..', 'uploads', 'profile_pictures', user.profile_picture);
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error("Error al eliminar la imagen de perfil:", err);
+                    }
+                });
+            }
+        } else {
+            profile_picture = user.profile_picture;
+        }
         const updatedUser = await User.findByIdAndUpdate(
-            id,
+            userId,
             {
                 name,
                 surname,
                 phone,
                 email,
-                profile_picture: req.file ? req.file.filename : currentPP,
+                profile_picture,
                 role
             },
             { new: true }
         );
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-
         res.json({ message: 'Datos del usuario actualizados' });
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el Usuario' });
@@ -58,15 +99,15 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const userId = req.params.id;
         const adminId = req.user.id;
-        
-        const user = await User.findById(id);
-        
+
+        const user = await User.findById(userId);
+
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
-        
+
         if (user.profile_picture) {
             const imagePath = path.join(__dirname, '..', 'uploads', 'profile_pictures', user.profile_picture);
             fs.unlink(imagePath, (err) => {
@@ -77,24 +118,15 @@ const deleteUser = async (req, res) => {
                 }
             });
         }
-        await Property.updateMany({ fk_advisor: id }, { fk_advisor: adminId });
+        await Property.updateMany({ fk_advisor: userId }, { fk_advisor: adminId });
+        await Transaction.updateMany({ fk_advisor: userId }, { fk_advisor: adminId });
 
-        await User.findByIdAndDelete(id);
+        await User.findByIdAndDelete(userId);
 
-        res.json({ message: 'Usuario eliminado y propiedades reasignadas' });
+        res.json({ message: 'Usuario eliminado, y propiedades y transacciones reasignadas' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar usuario' });
     }
 };
 
-const dashboard = (req, res) => {
-    console.log('Desde el dashboard');
-    res.json({
-        status: 'success',
-        data: {
-            test: 'Este es el dashboard'
-        }
-    });
-}
-
-module.exports = { createUser, updateUser, deleteUser, dashboard };
+module.exports = { getUsers, getProperties, getTransactions, createUser, updateUser, deleteUser };

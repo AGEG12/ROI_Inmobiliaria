@@ -4,24 +4,34 @@ const PropertySchema = new mongoose.Schema({
   type_property: {
     type: String,
     enum: ['Casa', 'Apartamento','Terreno','Local Comercial','Edificio', 'Bodega', 'Otro'],
+    required: true
   },
   deal: {
     type: String,
     enum: ['Venta', 'Renta', 'Otro'],
+    required: true
   },
-  title: String,
-  description: String,
-  price: Number,
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  price: { type: Number, required: true },
   payment_periodicity: {
     type: String,
-    enum: ['N/A','Mensual', 'Semanal','Por día','Anual'],
+    enum: ['Mensual', 'Semanal','Por día','Anual','Pago único'],
+    required: true
   },
-  land_area: Number,
-  constructed_meters: Number,
-  location: String,
+  land_area: { type: Number, required: true },
+  constructed_meters: { type: Number, required: true },
+  location: {
+    state: String,
+    city: String,
+    zip_code: Number,
+    settlement: String,
+    references: String,
+  },
   social_classification_area: {
     type: String,
-    enum: ['Zona urbana','Residencial', 'Interés social', 'Campestre','Rural'],
+    enum: ['Zona urbana','Residencial', 'Interés social', 'Campestre','Rural','Otro'],
+    required: true
   },
   features: {
     number_bedrooms: Number,
@@ -34,13 +44,18 @@ const PropertySchema = new mongoose.Schema({
     type: String,
     enum: ['Disponible','No Disponible'],
     default: 'Disponible',
+    required: true
   },
   agreed_commission: {
     percentage: Number,
     amount: Number,
     notes: String
   },
-  fk_advisor: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+  fk_advisor: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users',
+    required: true
+   },
   images: [String],
 });
 

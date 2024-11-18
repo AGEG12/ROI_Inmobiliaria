@@ -31,6 +31,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['admin', 'advisor'],
     default: 'advisor',
+    required: true
   },
   fk_admin: {
     type: mongoose.Schema.Types.ObjectId,

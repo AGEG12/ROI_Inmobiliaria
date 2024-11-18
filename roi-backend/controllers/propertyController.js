@@ -11,7 +11,7 @@ const addProperty = async (req, res) => {
                 return res.status(400).json({ message: "Error al cargar las imágenes", error: err });
             }
             const fk_advisor = req.user.id;
-            const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, location, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
+            const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, state, city, zip_code, settlement, references, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
             const imagesFilename = req.files.map(file => file.filename);
             const newProperty = new Property({
                 type_property,
@@ -22,7 +22,13 @@ const addProperty = async (req, res) => {
                 payment_periodicity,
                 land_area,
                 constructed_meters,
-                location,
+                location: {
+                    state,
+                    city,
+                    zip_code,
+                    settlement,
+                    references
+                },
                 social_classification_area,
                 features: {
                     number_bedrooms,
@@ -64,7 +70,6 @@ const getProperty = async (req, res) => {
     }
 }
 
-// Postman no envía nada al req.body si usamos from-data
 const updateProperty = async (req, res) => {
         try {
         const propertyId = req.params.id;
@@ -72,7 +77,7 @@ const updateProperty = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id) {
+        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
         }
         const transaction = await Transaction.findOne( { fk_property: propertyId } );
@@ -80,7 +85,7 @@ const updateProperty = async (req, res) => {
             return res.status(403).json({ message: "No es posible editar una propiedad relacionada a una transacción" });
         }
 
-        const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, location, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
+        const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, state, city, zip_code, settlement, references, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
         const updatedProperty = await Property.findByIdAndUpdate(
             propertyId,
             {
@@ -92,7 +97,13 @@ const updateProperty = async (req, res) => {
                 payment_periodicity,
                 land_area,
                 constructed_meters,
-                location,
+                location: {
+                    state,
+                    city,
+                    zip_code,
+                    settlement,
+                    references
+                },
                 social_classification_area,
                 features: {
                     number_bedrooms,
@@ -123,8 +134,8 @@ const deleteProperty = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id) {
-            return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
+        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+            return res.status(403).json({ message: "No tienes permiso para eliminar esta propiedad" });
         }
         const transaction = await Transaction.findOne( { fk_property: propertyId } );
         if ( transaction ) {
@@ -148,7 +159,6 @@ const deleteProperty = async (req, res) => {
     }
 }
 
-// Falta eliminar imagenes que superan el límite de 12
 const addImages = async (req, res) => {
     try {
         const propertyId = req.params.id;
@@ -156,29 +166,26 @@ const addImages = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id) {
-            return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
+        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+            return res.status(403).json({ message: "No tienes permiso para agregar imágenes a esta propiedad" });
         }
         await uploadPI(req, res, async (err) => {
             if (err) {
                 return res.status(400).json({ message: "Error al cargar las imágenes", error: err });
             }
             const imagesFilename = req.files.map(file => file.filename);
-
-            if (property.images.length >= 12) {
-                return res.status(400).json({ message: "Se ha alcanzado el límite de 12 imágenes por propiedad" });
-            }
             const remainingSlots = 12 - property.images.length;
-            /* let notAddedImages = imagesFilename.slice(-(imagesFilename.length - remainingSlots)) */
-            imagesFilename.splice(remainingSlots,imagesFilename.length - remainingSlots);
-            /* notAddedImages.forEach(imageName => {
-                const imagePath = path.join(__dirname, '..', 'uploads', 'property_images', imageName);
-                fs.unlink(imagePath, (err) => {
-                    if (err) {
-                        console.error("Error al eliminar la imagen:", err);
-                    }
+            if ((remainingSlots - imagesFilename.length) < 0) {
+                imagesFilename.forEach(imageName => {
+                    const imagePath = path.join(__dirname, '..', 'uploads', 'property_images', imageName);
+                    fs.unlink(imagePath, (err) => {
+                        if (err) {
+                            console.error("Error al eliminar la imagen:", err);
+                        }
+                    });
                 });
-            }); */
+                return res.status(400).json({ message: "No puedes agregar más de 12 imágenes a una propiedad, especios disponibles: " + remainingSlots });
+            }
             property.images.push(...imagesFilename);
             await property.save();
             res.status(200).json({ message: imagesFilename.length + ': imágenes se agregaron exitosamente' });
@@ -195,8 +202,8 @@ const deleteImage = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id) {
-            return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
+        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+            return res.status(403).json({ message: "No tienes permiso para eliminar imágenes de esta propiedad" });
         }
 
         const imageIndex = property.images.indexOf(imageName);
@@ -217,10 +224,6 @@ const deleteImage = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error al eliminar la imagen de la propiedad", error });
     }
-}
-
-const dashboard = async (req, res) => {
-    
 }
 
 module.exports = { addProperty, getProperty, updateProperty, deleteProperty, addImages, deleteImage };

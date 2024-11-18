@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-const { createUser, updateUser, deleteUser, dashboard } = require('./../controllers/adminController')
+const { getUsers, getProperties, getTransactions, createUser, updateUser, deleteUser } = require('./../controllers/adminController')
 const { authenticateToken, authorizeAdmin } = require('../middleware/authMiddleware');
 const { uploadPP } = require('../middleware/multerMiddleware');
 
-router.get('/', authenticateToken, authorizeAdmin, dashboard);
-router.post('/', authenticateToken, authorizeAdmin, uploadPP.single('image'), createUser);
-router.put('/:id', authenticateToken, authorizeAdmin, uploadPP.single('image'), updateUser);
-router.delete('/:id', authenticateToken, authorizeAdmin, deleteUser);
+router.get('/get-users', authenticateToken, authorizeAdmin, getUsers);
+router.get('/get-properties', authenticateToken, authorizeAdmin, getProperties);
+router.get('/get-transactions', authenticateToken, authorizeAdmin, getTransactions);
+router.post('/create-user', authenticateToken, authorizeAdmin, uploadPP.single('image'), createUser);
+router.put('/update-user/:id', authenticateToken, authorizeAdmin, uploadPP.single('image'), updateUser);
+router.delete('/delete-user/:id', authenticateToken, authorizeAdmin, deleteUser);
 
 module.exports = router;
