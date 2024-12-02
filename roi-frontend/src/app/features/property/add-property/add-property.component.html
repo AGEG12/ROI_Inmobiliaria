@@ -1,0 +1,272 @@
+<div class="container my-5 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="" class="btn btn-outline-secondary">Regresar al listado</a>
+    </div>
+    <h1 class="h3 text-muted text-center fw-bold mb-3">Agregar Propiedad</h1>
+    <form [formGroup]="addPropertyForm" (submit)="addProperty();">
+        <!-- Subir Imágenes -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Subir Imágenes</legend>
+            <div class="mb-3">
+                <label for="images" class="form-label">Seleccionar hasta 12 imágenes:</label>
+                <input type="file" id="images" class="form-control" accept="image/*" multiple>
+            </div>
+        </fieldset>
+        <!-- Información General -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Información General</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="title" class="form-label">Título</label>
+                    <input formControlName="title" type="text" id="title" class="form-control"
+                        placeholder="ej. Lujosa residencia en exclusivo fraccionamiento" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="type_property" class="form-label">Tipo de Propiedad</label>
+                    <select formControlName="type_property" id="type_property" class="form-select" required>
+                        <option selected disabled value="">---Seleccionar---</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Apartamento">Apartamento</option>
+                        <option value="Terreno">Terreno</option>
+                        <option value="Local">Local Comercial</option>
+                        <option value="Edificio">Edificio</option>
+                        <option value="Bodega">Bodega</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label for="description" class="form-label">Descripción</label>
+                    <textarea formControlName="description" id="description" class="form-control" rows="3"
+                        placeholder="ej. Vive el lujo en esta casa nueva lista para estrenar, ubicada en el exclusivo fraccionamiento privado La Cima. Esta propiedad ofrece una experiencia de vida única, cerca de áreas comerciales, hoteles, restaurantes, agencias de autos y universidades."></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label for="land_measurements" class="form-label">Dimensiones del Terreno (m)</label>
+                    <input formControlName="land_measurements" type="text" id="land_measurements" class="form-control"
+                        required placeholder="ej. 10 x 20 metros">
+                </div>
+                <div class="col-md-6">
+                    <label for="social_classification_area" class="form-label">Clasificación Social del Área</label>
+                    <select formControlName="social_classification_area" id="social_classification_area"
+                        class="form-select" required>
+                        <option disabled selected value="">---Seleccionar---</option>
+                        <option value="Zona Urbana">Zona Urbana</option>
+                        <option value="Residencial">Residencial</option>
+                        <option value="Interés Social">Interés Social</option>
+                        <option value="Campestre">Campestre</option>
+                        <option value="Rural">Rural</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Disponibilidad</label>
+                    <select formControlName="status" id="status" class="form-select" required>
+                        <option disabled selected value="">---Seleccionar---</option>
+                        <option value="Disponible">Disponible</option>
+                        <option value="No Disponible">No Disponible</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+        <!-- Oferta -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Oferta</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="deal" class="form-label">Trato</label>
+                    <select formControlName="deal" id="deal" class="form-select" required>
+                        <option selected disabled value="">---Seleccionar---</option>
+                        <option value="Venta">Venta</option>
+                        <option value="Renta">Renta</option>
+                        <option value="Venta o Renta">Venta o Renta</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="sales_price" class="form-label">Precio</label>
+                    <input formControlName="sales_price" type="number" id="sales_price" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="payment_periodicity" class="form-label">Periodicidad de Pago</label>
+                    <select formControlName="payment_periodicity" id="payment_periodicity" class="form-select">
+                        <option disabled selected value="">---Seleccionar---</option>
+                        <option value="Mensual">Mensual</option>
+                        <option value="Semanal">Semanal</option>
+                        <option value="Por día">Por día</option>
+                        <option value="Anual">Anual</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="rental_price" class="form-label">Precio de Renta</label>
+                    <input formControlName="rental_price" type="number" id="rental_price" class="form-control">
+                </div>
+            </div>
+        </fieldset>
+        <!-- Ubicación -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Ubicación</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="state" class="form-label">Estado</label>
+                    <select formControlName="state" id="state" class="form-select" required>
+                        <option disabled selected value="">---Seleccionar---</option>
+                        <option value="DIF">Distrito Federal</option>
+                        <option value="AGS">Aguascalientes</option>
+                        <option value="BCN">Baja California</option>
+                        <option value="BCS">Baja California Sur</option>
+                        <option value="CAM">Campeche</option>
+                        <option value="CHP">Chiapas</option>
+                        <option value="CHI">Chihuahua</option>
+                        <option value="COA">Coahuila</option>
+                        <option value="COL">Colima</option>
+                        <option value="DUR">Durango</option>
+                        <option value="GTO">Guanajuato</option>
+                        <option value="GRO">Guerrero</option>
+                        <option value="HGO">Hidalgo</option>
+                        <option value="JAL">Jalisco</option>
+                        <option value="MEX">M&eacute;xico</option>
+                        <option value="MIC">Michoac&aacute;n</option>
+                        <option value="MOR">Morelos</option>
+                        <option value="NAY">Nayarit</option>
+                        <option value="NLE">Nuevo Le&oacute;n</option>
+                        <option value="OAX">Oaxaca</option>
+                        <option value="PUE">Puebla</option>
+                        <option value="QRO">Quer&eacute;taro</option>
+                        <option value="ROO">Quintana Roo</option>
+                        <option value="SLP">San Luis Potos&iacute;</option>
+                        <option value="SIN">Sinaloa</option>
+                        <option value="SON">Sonora</option>
+                        <option value="TAB">Tabasco</option>
+                        <option value="TAM">Tamaulipas</option>
+                        <option value="TLX">Tlaxcala</option>
+                        <option value="VER">Veracruz</option>
+                        <option value="YUC">Yucat&aacute;n</option>
+                        <option value="ZAC">Zacatecas</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="city" class="form-label">Ciudad</label>
+                    <input formControlName="city" type="text" id="city" class="form-control" required
+                        placeholder="ej. Tuxtla Gutiérrez">
+                </div>
+                <div class="col-md-6">
+                    <label for="zip_code" class="form-label">Código Postal</label>
+                    <input formControlName="zip_code" type="text" id="zip_code" class="form-control" required
+                        placeholder="ej. 29030">
+                </div>
+                <div class="col-md-6">
+                    <label for="settlement" class="form-label">Asentamiento</label>
+                    <input formControlName="settlement" type="text" id="settlement" class="form-control"
+                        placeholder="ej. El Pedregal">
+                </div>
+                <div class="col-md-12">
+                    <label for="references" class="form-label">Referencias</label>
+                    <input formControlName="references" type="text" id="references" class="form-control"
+                        placeholder="ej. A 500m de la plaza Mirador">
+                </div>
+            </div>
+        </fieldset>
+        <!-- Características -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Características</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="constructed_meters" class="form-label">Metros de Construcción (m²)</label>
+                    <input formControlName="constructed_meters" type="number" id="constructed_meters"
+                        class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="number_bedrooms" class="form-label">Número de Habitaciones</label>
+                    <input formControlName="number_bedrooms" type="number" id="number_bedrooms" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="number_bathrooms" class="form-label">Número de Baños</label>
+                    <input formControlName="number_bathrooms" type="number" id="number_bathrooms" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="cistern_capacity" class="form-label">Capacidad de la Cisterna (L)</label>
+                    <input formControlName="cistern_capacity" type="number" id="cistern_capacity" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="garage_description" class="form-label">Descripción del Garage</label>
+                    <input formControlName="garage_description" type="text" id="garage_description" class="form-control"
+                        placeholder="ej. Estacionamiento techado para 2 autos">
+                </div>
+                <div class="col-md-6">
+                    <label for="additional_notes" class="form-label">Notas Adicionales</label>
+                    <input formControlName="additional_notes" type="text" id="additional_notes" class="form-control"
+                        placeholder="ej. Con jardín lateral y bodega">
+                </div>
+            </div>
+        </fieldset>
+        <!-- Comisión Acordada -->
+        <fieldset class="mb-4">
+            <legend class="text-secondary">Comisión Acordada</legend>
+            <div class="row g-3">
+                <label class="form-label">Comisión en venta:</label>
+                <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-sale-percentage"
+                            name="check-sale-commission">
+                        <label class="form-check-label" for="check-sale-percentage">Porcentaje</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-sale-amount"
+                            name="check-sale-commission">
+                        <label class="form-check-label" for="check-sale-amount">Monto</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-sale-both" name="check-sale-commission">
+                        <label class="form-check-label" for="check-sale-both">Ambos</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="percentage_sale" class="form-label">Porcentaje (%)</label>
+                    <input formControlName="percentage_sale" type="number" min="0" max="100" step="0.01"
+                        id="percentage_sale" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="amount_sale" class="form-label">Monto ($)</label>
+                    <input formControlName="amount_sale" type="number" min="0" step="0.01" id="amount_sale"
+                        class="form-control">
+                </div>
+                <label class="form-label">Comisión en renta:</label>
+                <div class="col-md-12">
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-rent-percentage"
+                            name="check-rent-commission">
+                        <label class="form-check-label" for="check-rent-percentage">Porcentaje</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-rent-amount"
+                            name="check-rent-commission">
+                        <label class="form-check-label" for="check-rent-amount">Monto</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" id="check-rent-both" name="check-rent-commission">
+                        <label class="form-check-label" for="check-rent-both">Ambos</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="percentage_rent" class="form-label">Porcentaje (%)</label>
+                    <input formControlName="percentage_rent" type="number" min="0" max="100" step="0.01"
+                        id="percentage_rent" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="amount_rent" class="form-label">Monto ($)</label>
+                    <input formControlName="amount_rent" type="number" min="0" step="0.01" id="amount_rent"
+                        class="form-control">
+                </div>
+                <div class="col-md-12">
+                    <label for="notes" class="form-label">Notas Adicionales</label>
+                    <textarea formControlName="notes" id="notes" class="form-control" rows="3"
+                        placeholder="ej. Comisión compartida con asesor Juan Pérez"></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-end">
+            <button type="reset" class="btn btn-secondary me-2">Limpiar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>

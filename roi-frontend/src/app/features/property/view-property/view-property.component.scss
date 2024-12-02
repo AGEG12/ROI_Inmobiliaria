@@ -1,0 +1,97 @@
+h1,
+h2 {
+    color: #333;
+}
+
+p {
+    margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.btn-group .btn {
+    margin-left: 0.5rem;
+}
+
+.btn-outline-secondary {
+    margin-right: 1rem;
+}
+
+h2 {
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.25rem;
+}
+
+
+.image-container {
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.square {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    /* Relación de aspecto 1:1 */
+    overflow: hidden;
+}
+
+.square img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Asegura que se mantenga el recorte */
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+.delete-image {
+    background-color: rgba(255, 0, 0, 0.8);
+    border: none;
+    border-radius: 50%;
+    padding: 5px 10px;
+    transition: background-color 0.3s;
+}
+
+.delete-image:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.square:hover {
+    border-color: #007bff;
+    /* Efecto hover */
+}
+
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #6c757d;
+    text-align: center;
+    transition: color 0.3s;
+}
+
+.upload-label:hover {
+    color: #007bff;
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+button[type="submit"] {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}

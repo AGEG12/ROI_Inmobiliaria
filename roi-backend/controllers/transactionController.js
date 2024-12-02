@@ -12,7 +12,7 @@ const registerTransaction = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (property.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para registrar una transacción para esta propiedad" });
         }
         if (property.status !== "Disponible") {
@@ -60,7 +60,7 @@ const deleteTransaction = async (req, res) => {
         if (!transaction) {
             return res.status(404).json({ message: "Transacción no encontrada" });
         }
-        if (transaction.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (transaction.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para eliminar esta transacción" });
         }
 
@@ -94,7 +94,7 @@ const updateTransaction = async (req, res) => {
         if (!transaction) {
             return res.status(404).json({ message: "Transacción no encontrada" });
         }
-        if (transaction.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (transaction.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para editar esta transacción" });
         }
         const updatedTransaction = await Transaction.findByIdAndUpdate(transactionId, { deal, amount, payment_periodicity, commission, date }, { new: true });
@@ -114,7 +114,7 @@ const uploadDocument = async (req, res) => {
         if (!transaction) {
             return res.status(404).json({ message: "Transacción no encontrada" });
         }
-        if (transaction.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (transaction.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para agregar documentos a esta transacción" });
         }
         if (transaction.documents.length >= 12) {
@@ -147,7 +147,7 @@ const deleteDocument = async (req, res) => {
         if (!transaction) {
             return res.status(404).json({ message: "Transacción no encontrada" });
         }
-        if (transaction.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (transaction.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para eliminar documentos de esta transacción" });
         }
 

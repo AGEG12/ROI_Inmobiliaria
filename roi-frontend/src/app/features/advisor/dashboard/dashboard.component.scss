@@ -1,0 +1,41 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background-color: #001a41;
+}
+
+.sidebar ul {
+    font-size: 0.9rem;
+}
+
+.sidebar a {
+    transition: color 0.3s;
+}
+
+.sidebar a:hover {
+    color: #ffffffcc;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card img {
+    border: 3px solid #e0e0e0;
+}
+
+.card i {
+    font-size: 3rem;
+}
+
+.badge {
+    font-size: 0.85rem;
+}

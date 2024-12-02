@@ -3,3 +3,5 @@
 /roi-backend/*.env
 /roi-backend/.env*
 /roi-backend/uploads
+/roi-frontend/node_modules
+/roi-frontend/public

@@ -11,17 +11,26 @@ const addProperty = async (req, res) => {
                 return res.status(400).json({ message: "Error al cargar las imágenes", error: err });
             }
             const fk_advisor = req.user.id;
-            const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, state, city, zip_code, settlement, references, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
+            const { title, description, type_property, land_measurements, social_classification_area, status,
+                deal, payment_periodicity, sales_price, rental_price,
+                state, city, zip_code, settlement, references,
+                constructed_meters, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes,
+                percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body;
+
             const imagesFilename = req.files.map(file => file.filename);
             const newProperty = new Property({
-                type_property,
-                deal,
                 title,
                 description,
-                price,
-                payment_periodicity,
-                land_area,
-                constructed_meters,
+                type_property,
+                land_measurements,
+                social_classification_area,
+                status,
+                offer: {
+                    deal,
+                    payment_periodicity: (deal === "Venta") ? null : payment_periodicity,
+                    sales_price: (deal === "Renta") ? null : sales_price,
+                    rental_price: (deal === "Venta") ? null : rental_price
+                },
                 location: {
                     state,
                     city,
@@ -29,18 +38,19 @@ const addProperty = async (req, res) => {
                     settlement,
                     references
                 },
-                social_classification_area,
                 features: {
+                    constructed_meters,
                     number_bedrooms,
                     number_bathrooms,
                     cistern_capacity,
                     garage_description,
                     additional_notes
                 },
-                status,
                 agreed_commission: {
-                    percentage,
-                    amount,
+                    percentage_sale: (deal === "Renta") ? null : percentage_sale,
+                    amount_sale: (deal === "Renta") ? null : amount_sale,
+                    percentage_rent: (deal === "Venta") ? null : percentage_rent,
+                    amount_rent: (deal === "Venta") ? null : amount_rent,
                     notes
                 },
                 fk_advisor,
@@ -61,8 +71,8 @@ const getProperty = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        const transaction = await Transaction.findOne( { fk_property: propertyId } );
-        const transactionId = !transaction ?  null : transaction._id;
+        const transaction = await Transaction.findOne({ fk_property: propertyId });
+        const transactionId = !transaction ? null : transaction._id;
 
         res.json({ property, transactionId });
     } catch (error) {
@@ -71,32 +81,41 @@ const getProperty = async (req, res) => {
 }
 
 const updateProperty = async (req, res) => {
-        try {
+    try {
         const propertyId = req.params.id;
         const property = await Property.findById(propertyId);
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (property.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para editar esta propiedad" });
         }
-        const transaction = await Transaction.findOne( { fk_property: propertyId } );
-        if ( transaction ) {
+        const transaction = await Transaction.findOne({ fk_property: propertyId });
+        if (transaction) {
             return res.status(403).json({ message: "No es posible editar una propiedad relacionada a una transacción" });
         }
 
-        const { type_property, deal, title, description, price, payment_periodicity, land_area, constructed_meters, state, city, zip_code, settlement, references, social_classification_area, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes, status, percentage, amount, notes } = req.body;
+        const { title, description, type_property, land_measurements, social_classification_area, status,
+            deal, payment_periodicity, sales_price, rental_price,
+            state, city, zip_code, settlement, references,
+            constructed_meters, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes,
+            percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body;
+
         const updatedProperty = await Property.findByIdAndUpdate(
             propertyId,
             {
-                type_property,
-                deal,
                 title,
                 description,
-                price,
-                payment_periodicity,
-                land_area,
-                constructed_meters,
+                type_property,
+                land_measurements,
+                social_classification_area,
+                status,
+                offer: {
+                    deal,
+                    payment_periodicity: (deal === "Venta") ? null : payment_periodicity,
+                    sales_price: (deal === "Renta") ? null : sales_price,
+                    rental_price: (deal === "Venta") ? null : rental_price
+                },
                 location: {
                     state,
                     city,
@@ -104,18 +123,19 @@ const updateProperty = async (req, res) => {
                     settlement,
                     references
                 },
-                social_classification_area,
                 features: {
+                    constructed_meters,
                     number_bedrooms,
                     number_bathrooms,
                     cistern_capacity,
                     garage_description,
                     additional_notes
                 },
-                status,
                 agreed_commission: {
-                    percentage,
-                    amount,
+                    percentage_sale: (deal === "Renta") ? null : percentage_sale,
+                    amount_sale: (deal === "Renta") ? null : amount_sale,
+                    percentage_rent: (deal === "Venta") ? null : percentage_rent,
+                    amount_rent: (deal === "Venta") ? null : amount_rent,
                     notes
                 }
             },
@@ -134,11 +154,11 @@ const deleteProperty = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (property.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para eliminar esta propiedad" });
         }
-        const transaction = await Transaction.findOne( { fk_property: propertyId } );
-        if ( transaction ) {
+        const transaction = await Transaction.findOne({ fk_property: propertyId });
+        if (transaction) {
             return res.status(403).json({ message: "No es posible eliminar una propiedad relacionada a una transacción" });
         }
 
@@ -166,7 +186,7 @@ const addImages = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (property.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para agregar imágenes a esta propiedad" });
         }
         await uploadPI(req, res, async (err) => {
@@ -202,7 +222,7 @@ const deleteImage = async (req, res) => {
         if (!property) {
             return res.status(404).json({ message: "Propiedad no encontrada" });
         }
-        if (property.fk_advisor.toString() !== req.user.id || req.user.role !== "admin") {
+        if (property.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para eliminar imágenes de esta propiedad" });
         }
 

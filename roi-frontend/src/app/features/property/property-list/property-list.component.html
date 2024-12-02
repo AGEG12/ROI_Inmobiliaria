@@ -1,0 +1,198 @@
+<div class="container my-4 p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="" class="btn btn-outline-secondary">Regresar al dashboard</a>
+        <div class="btn-group">
+            <button class="btn btn-success">Agregar propiedad</button>
+        </div>
+    </div>
+    <h1 class="h3 text-muted text-center fw-bold mb-3">Mis Propiedades</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-outline-primary" id="toggleFilters">
+            <i class="bi bi-funnel"></i> Filtrar y Ordenar
+        </button>
+    </div>
+    <!-- Menú de Filtros Lateral (Oculto por defecto) -->
+    <div id="filterMenu" class="offcanvas offcanvas-end" tabindex="-1">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filtrar y Ordenar</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form class="row">
+                <div class="mb-2">
+                    <label for="ordenarPor" class="form-label">Ordenar por</label>
+                    <select id="ordenarPor" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <option value="precio+">Precio+</option>
+                        <option value="precio-">Precio-</option>
+                        <option value="construccion+">Construcción+</option>
+                        <option value="construccion-">Construcción-</option>
+                        <option value="comisionMonto+">$Comisión+</option>
+                        <option value="comisionMonto-">$Comisión-</option>
+                        <option value="comisionPorcentaje+">%Comisión+</option>
+                        <option value="comisionPorcentaje-">%Comisión-</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="noDisponible">No Disponible</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="tipoPropiedad" class="form-label">Tipo de Propiedad</label>
+                    <select id="tipoPropiedad" class="form-select">
+                        <option value="">Seleccionar...</option>
+                        <option value="casa">Casa</option>
+                        <option value="apartamento">Apartamento</option>
+                        <option value="terreno">Terreno</option>
+                        <option value="localComercial">Local Comercial</option>
+                        <option value="edificio">Edificio</option>
+                        <option value="bodega">Bodega</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="clasificacion" class="form-label">Clasificación del Área Social</label>
+                    <select id="clasificacion" class="form-select">
+                        <option selected>Seleccionar...</option>
+                        <option value="urbana">Zona Urbana</option>
+                        <option value="residencial">Residencial</option>
+                        <option value="interesSocial">Interés Social</option>
+                        <option value="campestre">Campestre</option>
+                        <option value="rural">Rural</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label for="oferta" class="form-label">Oferta</label>
+                    <select id="oferta" class="form-select">
+                        <option selected>Seleccionar...</option>
+                        <option value="venta">Venta</option>
+                        <option value="renta">Renta</option>
+                        <option value="ventaRenta">Venta o Renta</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="ubicacion" class="form-label">Ubicación</label>
+                    <select id="ubicacion" class="form-select">
+                        <option selected>Seleccionar...</option>
+                        <option value="chiapas">Chiapas</option>
+                        <option value="puebla">Puebla</option>
+                        <option value="oaxaca">Oaxaca</option>
+                        <option value="jalisco">Jalisco</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="habitaciones" class="form-label">Habitaciones</label>
+                    <select id="habitaciones" class="form-select">
+                        <option selected>Seleccionar...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="+5">+5</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="comision" class="form-label">Comisión</label>
+                    <select id="comision" class="form-select">
+                        <option selected>Seleccionar...</option>
+                        <option value="porcentaje">Porcentaje</option>
+                        <option value="monto">Monto</option>
+                        <option value="ambos">Ambos</option>
+                    </select>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Aplicar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div>
+        <table class="table align-middle table-hover table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Título</th>
+                    <th scope="col">Terreno</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Ciudad</th>
+                    <th scope="col">Construcción</th>
+                    <th scope="col">% Comisión</th>
+                    <th scope="col">$ Comisión</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-unavailable">
+                    <td><img src="assets/fake/property1/1.jpeg"
+                            alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
+                    <td>Casa en Venta</td>
+                    <td>15 x 12 m</td>
+                    <td>$2500000</td>
+                    <td>Chiapas</td>
+                    <td>Tuxtla Gutiérrez</td>
+                    <td>165 m<sup>2</sup></td>
+                    <td>5%</td>
+                    <td>-</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-primary">Ver detalles</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-available">
+                    <td><img src="assets/fake/property2.jpeg"
+                            alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
+                    <td>Terreno en Venta</td>
+                    <td>20 x 50 m</td>
+                    <td>$1000000</td>
+                    <td>Chiapas</td>
+                    <td>Comitán</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>$25000</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-primary">Ver detalles</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="border-unavailable">
+                    <td><img src="assets/fake/property3.jpeg"
+                            alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
+                    <td>Casa en Renta</td>
+                    <td>7 x 15 m</td>
+                    <td>$6500</td>
+                    <td>Chiapas</td>
+                    <td>Tuxtla Gutiérrez</td>
+                    <td>120 m<sup>2</sup></td>
+                    <td>100%</td>
+                    <td>-</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-primary">Ver detalles</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const toggleFilters = document.getElementById('toggleFilters');
+    const filterMenu = document.getElementById('filterMenu');
+    toggleFilters.addEventListener('click', () => {
+        const offcanvas = new bootstrap.Offcanvas(filterMenu);
+        offcanvas.show();
+    });
+</script>

@@ -1,0 +1,29 @@
+.card {
+    border: none;
+    border-radius: 12px;
+    max-width: 600px;
+}
+
+img.rounded-circle {
+    border: 4px solid #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+label.form-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    padding: 0;
+    margin: 0;
+}
+
+.form-control-plaintext {
+    font-weight: 500;
+    color: #212529;
+    font-size: 1rem;
+}
+
+
+.btn-group .btn {
+    margin-left: 0.5rem;
+}
