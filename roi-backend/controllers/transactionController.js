@@ -40,6 +40,16 @@ const registerTransaction = async (req, res) => {
     }
 };
 
+const getTransactions = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const transactions = await Transaction.find({fk_advisor: userId});
+        res.json(transactions);
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener transacciones", error });
+    }
+}
+
 const getTransaction = async (req, res) => {
     try {
         const transactionId = req.params.id;
@@ -174,4 +184,4 @@ const deleteDocument = async (req, res) => {
     }
 };
 
-module.exports = { registerTransaction, getTransaction, deleteTransaction, updateTransaction, uploadDocument, deleteDocument };
+module.exports = { registerTransaction, getTransactions, getTransaction, deleteTransaction, updateTransaction, uploadDocument, deleteDocument };

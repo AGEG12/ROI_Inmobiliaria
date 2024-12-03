@@ -8,8 +8,6 @@ const { uploadPP } = require('../middleware/multerMiddleware');
 
 router.post('/login', login);
 router.get('/get', authenticateToken, getUser);
-router.get('/get-properties', authenticateToken, getProperties);
-router.get('/get-transactions', authenticateToken, getTransactions);
 router.patch('/change-password', authenticateToken, changePassword);
 router.put('/update-profile', authenticateToken, uploadPP.single('image'), updateProfile);
 router.delete('/delete-profile-picture', authenticateToken, deleteProfilePicture);

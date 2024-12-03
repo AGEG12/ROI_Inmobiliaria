@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { PropertyService } from '../../../core/services/property-service/property.service';
 
 @Component({
   selector: 'app-update-property',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './update-property.component.html',
   styleUrl: './update-property.component.scss'
 })
@@ -12,7 +15,7 @@ export class UpdatePropertyComponent {
   updatePropertyForm: FormGroup;
   fb = inject(FormBuilder);
 
-  constructor() {
+  constructor(private propertyService: PropertyService, private router: Router) {
     this.updatePropertyForm = this.fb.group({
       'title':               ['', [Validators.required]],
       'description':         ['', [Validators.required]],
@@ -44,6 +47,9 @@ export class UpdatePropertyComponent {
   }
 
   updateProperty(): void {
-    console.log(this.updatePropertyForm.value);
+    this.propertyService.updateProperty( this.updatePropertyForm.value, 'id' ).subscribe({
+      next: () => this.router.navigate(['/property-list']),
+      error: (err) => console.log('Error al agregar propiedad', err)
+    })
   }
 }

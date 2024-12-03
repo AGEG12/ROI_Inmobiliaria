@@ -1,21 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { PropertyService } from '../../../core/services/property-service/property.service';
 
 @Component({
   selector: 'app-add-property',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './add-property.component.html',
   styleUrl: './add-property.component.scss'
 })
 export class AddPropertyComponent {
   addPropertyForm: FormGroup;
   fb = inject(FormBuilder);
+/*   images: File[] = []; */
   
-  constructor() {
+  constructor(private propertyService: PropertyService, private router: Router) {
     this.addPropertyForm = this.fb.group({
-      'images':              ['', [Validators.required]],
       'title':               ['', [Validators.required]],
       'description':         ['', [Validators.required]],
       'type_property':       ['', [Validators.required]],
@@ -45,8 +47,25 @@ export class AddPropertyComponent {
     });
   }
 
+/*   onImagesSelected(event: any): void {
+    this.images = Array.from(event.target['files'][0]);
+  } */
+
   addProperty(): void {
-    console.log(this.addPropertyForm.value);
+    const formData = new FormData();
+    Object.keys(this.addPropertyForm.controls).forEach((key) => {
+      console.log(key);
+      formData.append( key , this.addPropertyForm.get(key)?.value );
+    });
+    console.log(formData);
+/*     this.images.forEach((image) => {
+      formData.append('images', image);
+    }); */
+
+    this.propertyService.addProperty(formData).subscribe({
+      next: () => this.router.navigate(['/property-list']),
+      error: (err) => console.log('Error al agregar propiedad', err)
+    })
   }
 
 }

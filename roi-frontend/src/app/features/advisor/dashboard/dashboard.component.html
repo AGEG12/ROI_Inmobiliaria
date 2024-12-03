@@ -6,22 +6,22 @@
             <li class="nav-item mb-3">
                 <span class="fw-bold">Perfil</span>
                 <ul class="list-unstyled ps-3">
-                    <li><a href="#" class="text-light text-decoration-none">Ver perfil</a></li>
-                    <li><a href="#" class="text-light text-decoration-none">Editar perfil</a></li>
-                    <li><a href="#" class="text-light text-decoration-none">Cambiar contraseña</a></li>
+                    <li><a routerLink="/view-profile" class="text-light text-decoration-none">Ver perfil</a></li>
+                    <li><a routerLink="/update-profile" class="text-light text-decoration-none">Editar perfil</a></li>
+                    <li><a routerLink="/change-password" class="text-light text-decoration-none">Cambiar contraseña</a></li>
                 </ul>
             </li>
             <li class="nav-item mb-3">
                 <span class="fw-bold">Propiedades</span>
                 <ul class="list-unstyled ps-3">
-                    <li><a href="#" class="text-light text-decoration-none">Ver propiedades</a></li>
-                    <li><a href="#" class="text-light text-decoration-none">Agregar propiedad</a></li>
+                    <li><a routerLink="/property-list" class="text-light text-decoration-none">Ver propiedades</a></li>
+                    <li><a routerLink="/add-property" class="text-light text-decoration-none">Agregar propiedad</a></li>
                 </ul>
             </li>
             <li class="nav-item mb-3">
                 <span class="fw-bold">Transacciones</span>
                 <ul class="list-unstyled ps-3">
-                    <li><a href="#" class="text-light text-decoration-none">Ver transacciones</a></li>
+                    <li><a routerLink="/transaction-list" class="text-light text-decoration-none">Ver transacciones</a></li>
                 </ul>
             </li>
         </ul>
@@ -30,7 +30,7 @@
     <main class="container-fluid p-4">
         <div class="row g-4">
             <!-- Mi Perfil -->
-            <div class="col-md-6 d-flex flex-column">
+            <div routerLink="/view-profile" class="col-md-6 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
                         <img src="assets/fake/advisor.jpeg" alt="Foto de perfil" class="rounded-circle me-4"
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <!-- Mis Propiedades -->
-            <div class="col-md-6 d-flex flex-column">
+            <div routerLink="/property-list" class="col-md-6 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-house-door-fill display-3 text-success me-4"></i>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <!-- Mis Transacciones -->
-            <div class="col-12 d-flex flex-column">
+            <div routerLink="/transaction-list" class="col-12 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-cash-stack display-3 text-info me-4"></i>

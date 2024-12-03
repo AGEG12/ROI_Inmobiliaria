@@ -23,7 +23,7 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, token);
   }
 
-  private getToken(): string | null {
+  getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 

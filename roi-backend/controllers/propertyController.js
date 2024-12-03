@@ -15,7 +15,7 @@ const addProperty = async (req, res) => {
                 deal, payment_periodicity, sales_price, rental_price,
                 state, city, zip_code, settlement, references,
                 constructed_meters, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes,
-                percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body;
+                percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body.property;
 
             const imagesFilename = req.files.map(file => file.filename);
             const newProperty = new Property({
@@ -77,6 +77,16 @@ const getProperty = async (req, res) => {
         res.json({ property, transactionId });
     } catch (error) {
         res.status(500).json({ message: "Error al obtener la propiedad", error });
+    }
+}
+
+const getProperties = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const properties = await Property.find({fk_advisor: userId});
+        res.json(properties);
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener propiedades", error });
     }
 }
 
@@ -246,4 +256,4 @@ const deleteImage = async (req, res) => {
     }
 }
 
-module.exports = { addProperty, getProperty, updateProperty, deleteProperty, addImages, deleteImage };
+module.exports = { addProperty, getProperties, getProperty, updateProperty, deleteProperty, addImages, deleteImage };

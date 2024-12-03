@@ -43,26 +43,6 @@ const getUser = async (req, res) => {
     }
 }
 
-const getProperties = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const properties = await Property.find({fk_advisor: userId});
-        res.json(properties);
-    } catch (error) {
-        res.status(500).json({ message: "Error al obtener propiedades", error });
-    }
-}
-
-const getTransactions = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const transaction = await Transaction.find({fk_advisor: userId});
-        res.json(transaction);
-    } catch (error) {
-        res.status(500).json({ message: "Error al obtener transacciones", error });
-    }
-}
-
 // Funcionalidad con problemas
 const changePassword = async (req, res) => {
     try {
@@ -149,4 +129,4 @@ const deleteProfilePicture = async (req, res) => {
 }
 
 
-module.exports = { login, getUser, getProperties, getTransactions, changePassword, updateProfile, deleteProfilePicture };
+module.exports = { login, getUser, changePassword, updateProfile, deleteProfilePicture };
