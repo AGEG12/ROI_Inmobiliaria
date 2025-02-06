@@ -1,6 +1,6 @@
-<div class="container my-5 p-4">
+<div *ngIf="property" class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a routerLink="/property-list" class="btn btn-outline-secondary">Regresar</a>
+        <a [routerLink]="['/view-property', property._id]" class="btn btn-outline-secondary">Regresar</a>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Editar Propiedad</h1>
     <form [formGroup]="updatePropertyForm" (submit)="updateProperty();">
@@ -10,7 +10,8 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="title" class="form-label">Título</label>
-                    <input formControlName="title" type="text" id="title" class="form-control" placeholder="ej. Lujosa residencia en exclusivo fraccionamiento" required>
+                    <input formControlName="title" type="text" id="title" class="form-control"
+                        placeholder="ej. Lujosa residencia en exclusivo fraccionamiento" required>
                 </div>
                 <div class="col-md-6">
                     <label for="type_property" class="form-label">Tipo de Propiedad</label>
@@ -19,7 +20,7 @@
                         <option value="Casa">Casa</option>
                         <option value="Apartamento">Apartamento</option>
                         <option value="Terreno">Terreno</option>
-                        <option value="Local">Local Comercial</option>
+                        <option value="Local comercial">Local Comercial</option>
                         <option value="Edificio">Edificio</option>
                         <option value="Bodega">Bodega</option>
                         <option value="Otro">Otro</option>
@@ -27,19 +28,22 @@
                 </div>
                 <div class="col-md-12">
                     <label for="description" class="form-label">Descripción</label>
-                    <textarea formControlName="description" id="description" class="form-control" rows="3" placeholder="ej. Vive el lujo en esta casa nueva lista para estrenar, ubicada en el exclusivo fraccionamiento privado La Cima. Esta propiedad ofrece una experiencia de vida única, cerca de áreas comerciales, hoteles, restaurantes, agencias de autos y universidades."></textarea>
+                    <textarea formControlName="description" id="description" class="form-control" rows="3"
+                        placeholder="ej. Vive el lujo en esta casa nueva lista para estrenar, ubicada en el exclusivo fraccionamiento privado La Cima. Esta propiedad ofrece una experiencia de vida única, cerca de áreas comerciales, hoteles, restaurantes, agencias de autos y universidades."></textarea>
                 </div>
                 <div class="col-md-6">
                     <label for="land_measurements" class="form-label">Dimensiones del Terreno (m)</label>
-                    <input formControlName="land_measurements" type="text" id="land_measurements" class="form-control" required placeholder="ej. 10 x 20 metros">
+                    <input formControlName="land_measurements" type="text" id="land_measurements" class="form-control"
+                        required placeholder="ej. 10 x 20 metros">
                 </div>
                 <div class="col-md-6">
                     <label for="social_classification_area" class="form-label">Clasificación Social del Área</label>
-                    <select formControlName="social_classification_area" id="social_classification_area" class="form-select" required>
+                    <select formControlName="social_classification_area" id="social_classification_area"
+                        class="form-select" required>
                         <option disabled selected>---Seleccionar---</option>
-                        <option value="Zona Urbana">Zona Urbana</option>
+                        <option value="Zona urbana">Zona urbana</option>
                         <option value="Residencial">Residencial</option>
-                        <option value="Interés Social">Interés Social</option>
+                        <option value="Interés social">Interés Social</option>
                         <option value="Campestre">Campestre</option>
                         <option value="Rural">Rural</option>
                         <option value="Otro">Otro</option>
@@ -61,28 +65,28 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="deal" class="form-label">Trato</label>
-                    <select formControlName="deal" id="deal" class="form-select" required>
+                    <select (change)="onChangedDeal();" formControlName="deal" id="deal" class="form-select" required>
                         <option selected disabled>---Seleccionar---</option>
                         <option value="Venta">Venta</option>
                         <option value="Renta">Renta</option>
                         <option value="Venta o Renta">Venta o Renta</option>
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label for="sales_price" class="form-label">Precio</label>
+                <div class="col-md-6" *ngIf="selectedDeal === 'Venta' || selectedDeal === 'Venta o Renta'">
+                    <label for="sales_price" class="form-label">Precio de Venta</label>
                     <input formControlName="sales_price" type="number" id="sales_price" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                     <label for="payment_periodicity" class="form-label">Periodicidad de Pago</label>
                     <select formControlName="payment_periodicity" id="payment_periodicity" class="form-select">
-                        <option disabled selected>---Seleccionar---</option>
+                        <option value="" disabled selected>---Seleccionar---</option>
                         <option value="Mensual">Mensual</option>
                         <option value="Semanal">Semanal</option>
                         <option value="Por día">Por día</option>
                         <option value="Anual">Anual</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                     <label for="rental_price" class="form-label">Precio de Renta</label>
                     <input formControlName="rental_price" type="number" id="rental_price" class="form-control">
                 </div>
@@ -132,19 +136,23 @@
                 </div>
                 <div class="col-md-6">
                     <label for="city" class="form-label">Ciudad</label>
-                    <input formControlName="city" type="text" id="city" class="form-control" required placeholder="ej. Tuxtla Gutiérrez">
+                    <input formControlName="city" type="text" id="city" class="form-control" required
+                        placeholder="ej. Tuxtla Gutiérrez">
                 </div>
                 <div class="col-md-6">
                     <label for="zip_code" class="form-label">Código Postal</label>
-                    <input formControlName="zip_code" type="text" id="zip_code" class="form-control" required placeholder="ej. 29030">
+                    <input formControlName="zip_code" type="text" id="zip_code" class="form-control" required
+                        placeholder="ej. 29030">
                 </div>
                 <div class="col-md-6">
                     <label for="settlement" class="form-label">Asentamiento</label>
-                    <input formControlName="settlement" type="text" id="settlement" class="form-control" placeholder="ej. El Pedregal">
+                    <input formControlName="settlement" type="text" id="settlement" class="form-control"
+                        placeholder="ej. El Pedregal">
                 </div>
                 <div class="col-md-12">
                     <label for="references" class="form-label">Referencias</label>
-                    <input formControlName="references" type="text" id="references" class="form-control" placeholder="ej. A 500m de la plaza Mirador">
+                    <input formControlName="references" type="text" id="references" class="form-control"
+                        placeholder="ej. A 500m de la plaza Mirador">
                 </div>
             </div>
         </fieldset>
@@ -154,7 +162,8 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="constructed_meters" class="form-label">Metros de Construcción (m²)</label>
-                    <input formControlName="constructed_meters" type="number" id="constructed_meters" class="form-control">
+                    <input formControlName="constructed_meters" type="number" id="constructed_meters"
+                        class="form-control">
                 </div>
                 <div class="col-md-6">
                     <label for="number_bedrooms" class="form-label">Número de Habitaciones</label>
@@ -170,26 +179,30 @@
                 </div>
                 <div class="col-md-6">
                     <label for="garage_description" class="form-label">Descripción del Garage</label>
-                    <input formControlName="garage_description" type="text" id="garage_description" class="form-control" placeholder="ej. Estacionamiento techado para 2 autos">
+                    <input formControlName="garage_description" type="text" id="garage_description" class="form-control"
+                        placeholder="ej. Estacionamiento techado para 2 autos">
                 </div>
                 <div class="col-md-6">
                     <label for="additional_notes" class="form-label">Notas Adicionales</label>
-                    <input formControlName="additional_notes" type="text" id="additional_notes" class="form-control" placeholder="ej. Con jardín lateral y bodega">
+                    <input formControlName="additional_notes" type="text" id="additional_notes" class="form-control"
+                        placeholder="ej. Con jardín lateral y bodega">
                 </div>
             </div>
         </fieldset>
         <!-- Comisión Acordada -->
         <fieldset class="mb-4">
             <legend class="text-secondary">Comisión Acordada</legend>
-            <div class="row g-3">
+            <div class="row g-3 mb-4" *ngIf="selectedDeal === 'Venta' || selectedDeal === 'Venta o Renta'">
                 <label class="form-label">Comisión en venta:</label>
                 <div class="col-md-12">
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" id="check-sale-percentage" name="check-sale-commission">
+                        <input type="radio" class="form-check-input" id="check-sale-percentage"
+                            name="check-sale-commission">
                         <label class="form-check-label" for="check-sale-percentage">Porcentaje</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" id="check-sale-amount" name="check-sale-commission">
+                        <input type="radio" class="form-check-input" id="check-sale-amount"
+                            name="check-sale-commission">
                         <label class="form-check-label" for="check-sale-amount">Monto</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -205,14 +218,18 @@
                     <label for="amount_sale" class="form-label">Monto ($)</label>
                     <input formControlName="amount_sale" type="number" id="amount_sale" class="form-control">
                 </div>
+            </div>
+            <div class="row g-3 mb-4" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                 <label class="form-label">Comisión en renta:</label>
                 <div class="col-md-12">
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" id="check-rent-percentage" name="check-rent-commission">
+                        <input type="radio" class="form-check-input" id="check-rent-percentage"
+                            name="check-rent-commission">
                         <label class="form-check-label" for="check-rent-percentage">Porcentaje</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" id="check-rent-amount" name="check-rent-commission">
+                        <input type="radio" class="form-check-input" id="check-rent-amount"
+                            name="check-rent-commission">
                         <label class="form-check-label" for="check-rent-amount">Monto</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -228,10 +245,11 @@
                     <label for="amount_rent" class="form-label">Monto ($)</label>
                     <input formControlName="amount_rent" type="number" id="amount_rent" class="form-control">
                 </div>
-                <div class="col-md-12">
-                    <label for="notes" class="form-label">Notas Adicionales</label>
-                    <textarea formControlName="notes" id="notes" class="form-control" rows="3" placeholder="ej. Comisión compartida con asesor Juan Pérez"></textarea>
-                </div>
+            </div>
+            <div class="col-md-12">
+                <label for="notes" class="form-label">Notas Adicionales</label>
+                <textarea formControlName="notes" id="notes" class="form-control" rows="3"
+                    placeholder="ej. Comisión compartida con asesor Juan Pérez"></textarea>
             </div>
         </fieldset>
 

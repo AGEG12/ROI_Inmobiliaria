@@ -14,7 +14,10 @@ import { PropertyService } from '../../../core/services/property-service/propert
 export class AddPropertyComponent {
   addPropertyForm: FormGroup;
   fb = inject(FormBuilder);
-/*   images: File[] = []; */
+  selectedDeal: string | null = null;
+
+  imagesPreview: string[] = []; 
+  selectedImages: File[] = [];
   
   constructor(private propertyService: PropertyService, private router: Router) {
     this.addPropertyForm = this.fb.group({
@@ -47,20 +50,42 @@ export class AddPropertyComponent {
     });
   }
 
-/*   onImagesSelected(event: any): void {
-    this.images = Array.from(event.target['files'][0]);
-  } */
+  onImagesSelected(event: any): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) {
+      return;
+    }
+    this.imagesPreview = [];
+    this.selectedImages = Array.from(input.files);
+
+    this.selectedImages.forEach((file) => {
+      if (!file.type.startsWith('image/')) {
+        alert(`El archivo ${file.name} no es una imagen. Será ignorado.`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          this.imagesPreview.push(reader.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  onChangedDeal(): void {
+    this.selectedDeal = this.addPropertyForm.get('deal')?.value;
+  }
 
   addProperty(): void {
     const formData = new FormData();
     Object.keys(this.addPropertyForm.controls).forEach((key) => {
-      console.log(key);
       formData.append( key , this.addPropertyForm.get(key)?.value );
     });
-    console.log(formData);
-/*     this.images.forEach((image) => {
+    this.selectedImages.forEach((image) => {
       formData.append('images', image);
-    }); */
+    });
 
     this.propertyService.addProperty(formData).subscribe({
       next: () => this.router.navigate(['/property-list']),

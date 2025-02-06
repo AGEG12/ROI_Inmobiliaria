@@ -1,18 +1,18 @@
-<div class="container my-5 p-4">
+<div *ngIf="transaction" class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="" class="btn btn-outline-secondary">Regresar</a>
+        <a [routerLink]="['/view-transaction', transactionId]" class="btn btn-outline-secondary">Regresar</a>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Editar Transacción</h1>
     <form [formGroup]="updateTransactionForm" (submit)="updateTransaction();">
         <div class="mb-3">
             <label for="deal" class="form-label">Trato</label>
-            <select formControlName="deal" id="deal" class="form-select" required>
+            <select (change)="onChangedDeal();" formControlName="deal" id="deal" class="form-select" required>
                 <option selected disabled value="">---Seleccionar---</option>
                 <option value="Venta">Venta</option>
                 <option value="Renta">Renta</option>
             </select>
         </div>
-<!--         <div class="mb-3">
+        <div class="mb-3" *ngIf="selectedDeal === 'Renta'">
             <label for="payment_periodicity" class="form-label">Periodicidad de Pago</label>
             <select formControlName="payment_periodicity" id="payment_periodicity" class="form-select" required>
                 <option selected disabled value="">---Seleccionar---</option>
@@ -21,7 +21,7 @@
                 <option value="Por día">Por día</option>
                 <option value="Anual">Anual</option>
             </select>
-        </div> -->
+        </div>
         <div class="mb-3">
             <label for="amount" class="form-label">Monto de la Operación ($)</label>
             <input formControlName="amount" type="number" id="amount" class="form-control" min="0" step="0.01" placeholder="Ingrese el monto" required>

@@ -10,39 +10,41 @@ export class AdvisorService {
   private apiURL = 'http://localhost:3000/api/v1/';
   constructor(private httpClient: HttpClient, private authService: AuthService) { }
 
+  getStats(): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return  this.httpClient.get<any>(this.apiURL+'users/dashboard', {headers} );
+  }
+
   getUser(): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.get<any>(this.apiURL+'users/get', {headers} ).pipe(
-      tap(response =>{
-        if (response.user) console.log(response.user);
-    }));
+    return this.httpClient.get<any>(this.apiURL+'users/get', {headers} );
   }
 
-  updateProfile(user: object ): Observable<any> {
+  getUserById(userId: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.put<any>(this.apiURL+'users/update-profile', user , {headers} ).pipe(
-      tap(response =>{
-        if (response.message) console.log(response.message);
-    }));
+    return this.httpClient.get<any>(this.apiURL+'users/get/'+userId, {headers} );
+  }
+
+  updateProfile(user: FormData ): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return  this.httpClient.put<any>(this.apiURL+'users/update-profile', user , {headers} );
   }
 
   changePassword(credentials: object ): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.patch<any>(this.apiURL+'users/change-password', credentials , {headers} ).pipe(
-      tap(response =>{
-        if (response.message) console.log(response.message);
-    }));
+    // Return message
+    return  this.httpClient.patch<any>(this.apiURL+'users/change-password', credentials , {headers} );
   }
 
   deleteProfilePicture(): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.delete<any>(this.apiURL+'users/delete-profile-picture', {headers} ).pipe(
-      tap(response =>{
-        if (response.message) console.log(response.message);
-    }));
+    // Return message
+    return  this.httpClient.delete<any>(this.apiURL+'users/delete-profile-picture', {headers} );
   }
 }

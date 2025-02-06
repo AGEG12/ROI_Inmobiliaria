@@ -22,8 +22,7 @@ const transactionSchema = mongoose.Schema({
   },
   payment_periodicity: {
     type: String,
-    enum: ['Mensual', 'Semanal','Por día','Anual','Pago único'],
-    required: true
+    enum: ['Mensual', 'Semanal','Por día','Anual'],
   },
   commission: {
     type: Number,

@@ -133,54 +133,32 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="border-unavailable">
-                    <td><img src="assets/fake/property1/1.jpeg"
+                <tr *ngFor="let property of properties;" [class]="property.status === 'Disponible' ? 'border-available' : 'border-unavailable'">
+                    <td><img [src]="property.images[0] ? uploadsUrl+property.images[0] : 'assets/resources/unknown_property.png'"
                             alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
-                    <td>Casa en Venta</td>
-                    <td>15 x 12 m</td>
-                    <td>$2500000</td>
-                    <td>Chiapas</td>
-                    <td>Tuxtla Gutiérrez</td>
-                    <td>165 m<sup>2</sup></td>
-                    <td>5%</td>
-                    <td>-</td>
+                    <td>{{property.type_property}} en {{property.offer.deal}}</td>
+                    <td>{{property.land_measurements}}</td>
                     <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-primary">Ver detalles</button>
-                        </div>
+                        <span *ngIf="property.offer.deal === 'Venta' || property.offer.deal === 'Venta o Renta'">{{ formatCurrencyMXN(property.offer.sales_price) }}</span>
+                        <span *ngIf="property.offer.deal === 'Venta o Renta'"> - </span>
+                        <span *ngIf="property.offer.deal === 'Renta' || property.offer.deal === 'Venta o Renta'">{{ formatCurrencyMXN(property.offer.rental_price) }} / {{property.offer.payment_periodicity}}</span>
                     </td>
-                </tr>
-                <tr class="border-available">
-                    <td><img src="assets/fake/property2.jpeg"
-                            alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
-                    <td>Terreno en Venta</td>
-                    <td>20 x 50 m</td>
-                    <td>$1000000</td>
-                    <td>Chiapas</td>
-                    <td>Comitán</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>$25000</td>
+                    <td>{{property.location.state}}</td>
+                    <td>{{property.location.city}}</td>
+                    <td>{{property.features.constructed_meters}} m<sup>2</sup></td>
                     <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-primary">Ver detalles</button>
-                        </div>
+                        <span *ngIf="(property.offer.deal === 'Venta' || property.offer.deal === 'Venta o Renta') && property.agreed_commission.percentage_sale">{{ property.agreed_commission.percentage_sale }}%</span>
+                        <span *ngIf="property.offer.deal === 'Venta o Renta' || (!property.agreed_commission.percentage_sale && !property.agreed_commission.percentage_rent)"> - </span>
+                        <span *ngIf="(property.offer.deal === 'Renta' || property.offer.deal === 'Venta o Renta') && property.agreed_commission.percentage_rent">{{ property.agreed_commission.percentage_rent }}%</span>
                     </td>
-                </tr>
-                <tr class="border-unavailable">
-                    <td><img src="assets/fake/property3.jpeg"
-                            alt="Casa" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;"></td>
-                    <td>Casa en Renta</td>
-                    <td>7 x 15 m</td>
-                    <td>$6500</td>
-                    <td>Chiapas</td>
-                    <td>Tuxtla Gutiérrez</td>
-                    <td>120 m<sup>2</sup></td>
-                    <td>100%</td>
-                    <td>-</td>
+                    <td>
+                        <span *ngIf="(property.offer.deal === 'Venta' || property.offer.deal === 'Venta o Renta') && property.agreed_commission.amount_sale">{{ formatCurrencyMXN(property.agreed_commission.amount_sale) }}</span>
+                        <span *ngIf="property.offer.deal === 'Venta o Renta' || (!property.agreed_commission.amount_sale && !property.agreed_commission.amount_rent)"> - </span>
+                        <span *ngIf="(property.offer.deal === 'Renta' || property.offer.deal === 'Venta o Renta') && property.agreed_commission.amount_rent">{{ formatCurrencyMXN(property.agreed_commission.amount_rent) }}</span>
+                    </td>
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-primary">Ver detalles</button>
+                            <button [routerLink]="['/view-property', property._id]" class="btn btn-sm btn-primary">Ver detalles</button>
                         </div>
                     </td>
                 </tr>

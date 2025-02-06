@@ -1,6 +1,6 @@
 <div class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="" class="btn btn-outline-secondary">Regresar al dashboard</a>
+        <a [routerLink]="['/dashboard']" class="btn btn-outline-secondary">Regresar al dashboard</a>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Mis Transacciones</h1>
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -43,45 +43,31 @@
     </div>
     
     <div>
-        <table class="table align-middle table-hover table-striped">
+        <table *ngIf="transactions" class="table align-middle table-hover table-striped">
             <thead class="table-light">
                 <tr>
                     <th scope="col">Tipo de trato</th>
                     <th scope="col">Monto de la operación</th>
-                    <th scope="col">Periodicidad</th>
                     <th scope="col">Comisión</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Venta</td>
-                    <td>$2500000</td>
-                    <td>N/A</td>
-                    <td>$125000</td>
-                    <td>2024-10-29</td>
+                <tr *ngFor="let transaction of transactions">
+                    <td>{{transaction.deal}}</td>
                     <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-info btn-sm">Ver detalles</button>
-                            <button class="btn btn-sm btn-primary btn-sm">Editar</button>
-                            <button class="btn btn-sm btn-danger btn-sm">Eliminar</button>
-                            <button class="btn btn-sm btn-warning btn-sm">Ver Propiedad</button>
-                        </div>
+                        {{ formatCurrencyMXN(transaction.amount) }}
+                        <span *ngIf="transaction.deal === 'Renta'">/ {{transaction.payment_periodicity}}</span>
                     </td>
-                </tr>
-                <tr>
-                    <td>Renta</td>
-                    <td>6500</td>
-                    <td>Mensual</td>
-                    <td>$6500</td>
-                    <td>2024-11-06</td>
+                    <td>{{ formatCurrencyMXN(transaction.commission) }}</td>
+                    <td>{{transaction.date.substr(0,10)}}</td>
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-sm btn-info btn-sm">Ver detalles</button>
-                            <button class="btn btn-sm btn-primary btn-sm">Editar</button>
-                            <button class="btn btn-sm btn-danger btn-sm">Eliminar</button>
-                            <button class="btn btn-sm btn-warning btn-sm">Ver Propiedad</button>
+                            <button [routerLink]="['/view-transaction', transaction._id]" class="btn btn-sm btn-info btn-sm">Ver detalles</button>
+                            <button [routerLink]="['/update-transaction', transaction._id]" class="btn btn-sm btn-primary btn-sm">Editar</button>
+                            <button (click)="deleteTransaction(transaction._id);" class="btn btn-sm btn-danger btn-sm">Eliminar</button>
+                            <button [routerLink]="['/view-property', transaction.fk_property]" class="btn btn-sm btn-warning btn-sm">Ver Propiedad</button>
                         </div>
                     </td>
                 </tr>

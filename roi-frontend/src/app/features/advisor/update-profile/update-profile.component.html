@@ -1,15 +1,15 @@
 <div class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="" class="btn btn-outline-secondary">Regresar</a>
+        <a routerLink="/view-profile" class="btn btn-outline-secondary">Regresar al perfil</a>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Editar perfil</h1>
     <form [formGroup]="updateProfileForm" (submit)="updateProfile();">
         <div class="mb-4 text-center">
-            <img src="assets/fake/advisor.jpeg" alt="Imagen de perfil" class="img-thumbnail rounded-circle mb-3"
+            <img [src]="imagePreview ? imagePreview : imageUrl" alt="Imagen de perfil" class="img-thumbnail rounded-circle mb-3"
                 style="width: 125px; height: 125px; object-fit: cover;">
             <div>
                 <label for="image" class="form-label">Cargar nueva imagen</label>
-                <input type="file" id="image" class="form-control" accept="image/*">
+                <input (change)="onFileSelected($event)" type="file" id="image" class="form-control" accept="image/*">
             </div>
         </div>
         <div class="mb-1">

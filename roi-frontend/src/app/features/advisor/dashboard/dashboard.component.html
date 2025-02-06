@@ -30,44 +30,44 @@
     <main class="container-fluid p-4">
         <div class="row g-4">
             <!-- Mi Perfil -->
-            <div routerLink="/view-profile" class="col-md-6 d-flex flex-column">
+            <div *ngIf="user" routerLink="/view-profile" class="col-md-6 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
-                        <img src="assets/fake/advisor.jpeg" alt="Foto de perfil" class="rounded-circle me-4"
+                        <img src="{{ imageUrl }}" alt="Foto de perfil" class="rounded-circle me-4"
                             style="width: 100px; height: 100px; object-fit: cover;">
                         <div>
-                            <h2 class="h5 mb-2">Alan Estrada</h2>
-                            <p class="mb-1 text-muted">Teléfono: <span class="fw-bold">9612423431</span></p>
-                            <p class="mb-1 text-muted">Email: <span class="fw-bold">alan&#64;correo.com</span></p>
-                            <p class="text-muted">Tipo de usuario: <span class="badge bg-primary">Asesor</span></p>
+                            <h2 class="h5 mb-2">{{user.name}} {{user.surname}}</h2>
+                            <p class="mb-1 text-muted">Teléfono: <span class="fw-bold">{{user.phone}}</span></p>
+                            <p class="mb-1 text-muted">Email: <span class="fw-bold">{{user.email}}</span></p>
+                            <p class="text-muted">Tipo de usuario: <span class="badge bg-primary">{{user.role}}</span></p>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Mis Propiedades -->
-            <div routerLink="/property-list" class="col-md-6 d-flex flex-column">
+            <div *ngIf="propertyStats" routerLink="/property-list" class="col-md-6 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-house-door-fill display-3 text-success me-4"></i>
                         <div>
                             <h2 class="h5 mb-2">Mis Propiedades</h2>
-                            <p class="mb-1">Total registradas: <span class="fw-bold">3</span></p>
-                            <p class="mb-1 text-success">Disponibles: <span class="fw-bold">1</span></p>
-                            <p class="text-danger">No disponibles: <span class="fw-bold">2</span></p>
+                            <p class="mb-1">Total registradas: <span class="fw-bold">{{propertyStats.totalProperties}}</span></p>
+                            <p class="mb-1">Disponibles: <span class="fw-bold text-success">{{propertyStats.availableProperties}}</span></p>
+                            <p >No disponibles: <span class="fw-bold text-danger">{{propertyStats.unavailableProperties}}</span></p>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Mis Transacciones -->
-            <div routerLink="/transaction-list" class="col-12 d-flex flex-column">
+            <div *ngIf="transactionStats" routerLink="/transaction-list" class="col-12 d-flex flex-column">
                 <div class="card flex-grow-1 shadow-sm p-4">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-cash-stack display-3 text-info me-4"></i>
                         <div>
                             <h2 class="h5 mb-2">Mis Transacciones</h2>
-                            <p class="mb-1">Total registradas: <span class="fw-bold">2</span></p>
-                            <p class="mb-1">Total vendido: <span class="fw-bold text-success">$2506500</span></p>
-                            <p class="text-primary">Comisiones cobradas: <span class="fw-bold">$131500</span></p>
+                            <p class="mb-1">Total registradas: <span class="fw-bold">{{transactionStats.totalTransactions}}</span></p>
+                            <p class="mb-1">Total vendido: <span class="fw-bold text-success">{{formatCurrencyMXN(transactionStats.totalAmount)}}</span></p>
+                            <p >Comisiones cobradas: <span class="fw-bold text-primary">{{formatCurrencyMXN(transactionStats.totalCommissions)}}</span></p>
                         </div>
                     </div>
                 </div>

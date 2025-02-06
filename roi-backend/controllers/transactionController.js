@@ -6,7 +6,7 @@ const path = require('path');
 const registerTransaction = async (req, res) => {
     try {
         const propertyId = req.params.id;
-        const { deal, amount, payment_periodicity, commission, date } = req.body;
+        const { deal, amount, payment_periodicity, commission, date } = req.body.transaction;
 
         const property = await Property.findById(propertyId);
         if (!property) {
@@ -24,7 +24,7 @@ const registerTransaction = async (req, res) => {
             fk_advisor: req.user.id,
             deal,
             amount,
-            payment_periodicity,
+            payment_periodicity: (deal === "Venta") ? null : payment_periodicity,
             commission,
             date,
             documents: []
@@ -34,7 +34,7 @@ const registerTransaction = async (req, res) => {
         property.status = "No Disponible";
         await property.save();
 
-        res.status(201).json({ message: "Transacción registrada exitosamente" });
+        res.status(201).json({ message: "Transacción registrada exitosamente", transactionId: transaction.id });
     } catch (error) {
         res.status(500).json({ message: "Error al registrar la transacción", error });
     }
@@ -98,7 +98,7 @@ const deleteTransaction = async (req, res) => {
 const updateTransaction = async (req, res) => {
     try {
         const transactionId = req.params.id;
-        const { deal, amount, payment_periodicity, commission, date } = req.body;
+        const { deal, amount, payment_periodicity, commission, date } = req.body.transaction;
 
         const transaction = await Transaction.findById(transactionId);
         if (!transaction) {
@@ -107,7 +107,17 @@ const updateTransaction = async (req, res) => {
         if (transaction.fk_advisor.toString() !== req.user.id && req.user.role !== "admin") {
             return res.status(403).json({ message: "No tienes permiso para editar esta transacción" });
         }
-        const updatedTransaction = await Transaction.findByIdAndUpdate(transactionId, { deal, amount, payment_periodicity, commission, date }, { new: true });
+        const updatedTransaction = await Transaction.findByIdAndUpdate(
+            transactionId,
+            {
+                deal,
+                amount,
+                payment_periodicity: (deal === "Venta") ? null : payment_periodicity,
+                commission,
+                date
+            },
+            { new: true }
+        );
 
         res.status(200).json({ message: "Transacción actualizada exitosamente", updatedTransaction });
     } catch (error) {

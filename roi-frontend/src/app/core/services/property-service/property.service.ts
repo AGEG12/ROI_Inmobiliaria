@@ -13,35 +13,51 @@ export class PropertyService {
   getProperties(): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.get<any>(this.apiURL+'properties/get/properties', {headers} ).pipe(
-      tap(response =>{
-        if (response.properties) console.log(response.properties);
-    }));
+    return this.httpClient.get<any>(this.apiURL + 'properties/get/properties', { headers });
   }
   getProperty(id: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.get<any>(`${this.apiURL}properties/get/${id}`, {headers} ).pipe(
-      tap(response =>{
-        if (response) console.log(response.properties, response.transactionId);
-    }));
+    return this.httpClient.get<any>(`${this.apiURL}properties/get/${id}`, { headers });
   }
 
-  addProperty(property: object ): Observable<any> {
+  addProperty(property: FormData): Observable<any> {
+    /*     property.forEach((value, key) => {
+          console.log(`${key}:`, value);
+        }); */
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.post<any>(this.apiURL+'properties/add', property , {headers} ).pipe(
-      tap(response =>{
+    return this.httpClient.post<any>(this.apiURL + 'properties/add', property, { headers }).pipe(
+      tap(response => {
         if (response.message) console.log(response.message);
-    }));
+      }));
   }
 
-  updateProperty(property: object, id: string ): Observable<any> {
+  updateProperty(property: object, id: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return  this.httpClient.put<any>(`${this.apiURL}properties/update/${id}`, property , {headers} ).pipe(
-      tap(response =>{
+    return this.httpClient.put<any>(`${this.apiURL}properties/update/${id}`, { property }, { headers }).pipe(
+      tap(response => {
         if (response.message) console.log(response.message);
-    }));
+      }));
   }
+
+  deleteProperty(propertyId: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.delete<any>(`${this.apiURL}properties/delete/${propertyId}`, { headers });
+  }
+
+  addImages(images: FormData, id: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.post<any>(`${this.apiURL}properties/add-images/${id}`, images, { headers });
+  }
+
+  deleteImage(propertyId: string, imageName: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.delete<any>(`${this.apiURL}properties/delete-image/${propertyId}/image/${imageName}`, { headers });
+  }
+
 }

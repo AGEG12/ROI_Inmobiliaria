@@ -17,19 +17,5 @@ const createAdminUser = async (req, res) => {
         res.status(500).json({ message: 'Error al registrar administrador' });
     }
 };
-const getUser = (req, res) => {
-        const email = req.body;
 
-        let user = User.findOne({ email });
-        console.log(user);
-        if (user) {
-            return res.json({
-                status: 'success',
-                data: {
-                    test: 'Usuario encontrado'
-                }
-            });
-        }
-};
-
-module.exports = { createAdminUser, getUser };
+module.exports = { createAdminUser };

@@ -4,15 +4,21 @@
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Agregar Propiedad</h1>
     <form [formGroup]="addPropertyForm" (submit)="addProperty();">
-        <!-- Subir Imágenes -->
         <fieldset class="mb-4">
             <legend class="text-secondary">Subir Imágenes</legend>
             <div class="mb-3">
                 <label for="images" class="form-label">Seleccionar hasta 12 imágenes:</label>
-                <input type="file" id="images" class="form-control" accept="image/*" multiple>
+                <input (change)="onImagesSelected($event)" type="file" id="images" class="form-control" accept="image/*"
+                    multiple>
+            </div>
+            <div *ngIf="imagesPreview.length">
+                <h3>Previsualización:</h3>
+                <div *ngFor="let imagePreview of imagesPreview">
+                    <img [src]="imagePreview" alt="Previsualización de imagen"
+                        style="max-width: 200px; margin: 10px;" />
+                </div>
             </div>
         </fieldset>
-        <!-- Información General -->
         <fieldset class="mb-4">
             <legend class="text-secondary">Información General</legend>
             <div class="row g-3">
@@ -28,7 +34,7 @@
                         <option value="Casa">Casa</option>
                         <option value="Apartamento">Apartamento</option>
                         <option value="Terreno">Terreno</option>
-                        <option value="Local">Local Comercial</option>
+                        <option value="Local comercial">Local Comercial</option>
                         <option value="Edificio">Edificio</option>
                         <option value="Bodega">Bodega</option>
                         <option value="Otro">Otro</option>
@@ -49,9 +55,9 @@
                     <select formControlName="social_classification_area" id="social_classification_area"
                         class="form-select" required>
                         <option disabled selected value="">---Seleccionar---</option>
-                        <option value="Zona Urbana">Zona Urbana</option>
+                        <option value="Zona urbana">Zona Urbana</option>
                         <option value="Residencial">Residencial</option>
-                        <option value="Interés Social">Interés Social</option>
+                        <option value="Interés social">Interés Social</option>
                         <option value="Campestre">Campestre</option>
                         <option value="Rural">Rural</option>
                         <option value="Otro">Otro</option>
@@ -73,18 +79,18 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="deal" class="form-label">Trato</label>
-                    <select formControlName="deal" id="deal" class="form-select" required>
+                    <select (change)="onChangedDeal();" formControlName="deal" id="deal" class="form-select" required>
                         <option selected disabled value="">---Seleccionar---</option>
                         <option value="Venta">Venta</option>
                         <option value="Renta">Renta</option>
                         <option value="Venta o Renta">Venta o Renta</option>
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label for="sales_price" class="form-label">Precio</label>
+                <div class="col-md-6" *ngIf="selectedDeal === 'Venta' || selectedDeal === 'Venta o Renta'">
+                    <label for="sales_price" class="form-label">Precio de Venta</label>
                     <input formControlName="sales_price" type="number" id="sales_price" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                     <label for="payment_periodicity" class="form-label">Periodicidad de Pago</label>
                     <select formControlName="payment_periodicity" id="payment_periodicity" class="form-select">
                         <option disabled selected value="">---Seleccionar---</option>
@@ -94,7 +100,7 @@
                         <option value="Anual">Anual</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                     <label for="rental_price" class="form-label">Precio de Renta</label>
                     <input formControlName="rental_price" type="number" id="rental_price" class="form-control">
                 </div>
@@ -200,7 +206,7 @@
         <!-- Comisión Acordada -->
         <fieldset class="mb-4">
             <legend class="text-secondary">Comisión Acordada</legend>
-            <div class="row g-3">
+            <div class="row g-3 mb-4" *ngIf="selectedDeal === 'Venta' || selectedDeal === 'Venta o Renta'">
                 <label class="form-label">Comisión en venta:</label>
                 <div class="col-md-12">
                     <div class="form-check form-check-inline">
@@ -220,14 +226,14 @@
                 </div>
                 <div class="col-md-6">
                     <label for="percentage_sale" class="form-label">Porcentaje (%)</label>
-                    <input formControlName="percentage_sale" type="number" min="0" max="100" step="0.01"
-                        id="percentage_sale" class="form-control">
+                    <input formControlName="percentage_sale" type="number" id="percentage_sale" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <label for="amount_sale" class="form-label">Monto ($)</label>
-                    <input formControlName="amount_sale" type="number" min="0" step="0.01" id="amount_sale"
-                        class="form-control">
+                    <input formControlName="amount_sale" type="number" id="amount_sale" class="form-control">
                 </div>
+            </div>
+            <div class="row g-3 mb-4" *ngIf="selectedDeal === 'Renta' || selectedDeal === 'Venta o Renta'">
                 <label class="form-label">Comisión en renta:</label>
                 <div class="col-md-12">
                     <div class="form-check form-check-inline">
@@ -247,23 +253,19 @@
                 </div>
                 <div class="col-md-6">
                     <label for="percentage_rent" class="form-label">Porcentaje (%)</label>
-                    <input formControlName="percentage_rent" type="number" min="0" max="100" step="0.01"
-                        id="percentage_rent" class="form-control">
+                    <input formControlName="percentage_rent" type="number" id="percentage_rent" class="form-control">
                 </div>
                 <div class="col-md-6">
                     <label for="amount_rent" class="form-label">Monto ($)</label>
-                    <input formControlName="amount_rent" type="number" min="0" step="0.01" id="amount_rent"
-                        class="form-control">
-                </div>
-                <div class="col-md-12">
-                    <label for="notes" class="form-label">Notas Adicionales</label>
-                    <textarea formControlName="notes" id="notes" class="form-control" rows="3"
-                        placeholder="ej. Comisión compartida con asesor Juan Pérez"></textarea>
+                    <input formControlName="amount_rent" type="number" id="amount_rent" class="form-control">
                 </div>
             </div>
+            <div class="col-md-12">
+                <label for="notes" class="form-label">Notas Adicionales</label>
+                <textarea formControlName="notes" id="notes" class="form-control" rows="3"
+                    placeholder="ej. Comisión compartida con asesor Juan Pérez"></textarea>
+            </div>
         </fieldset>
-
-        <!-- Botones -->
         <div class="d-flex justify-content-end">
             <button type="reset" class="btn btn-secondary me-2">Limpiar</button>
             <button type="submit" class="btn btn-primary">Guardar</button>

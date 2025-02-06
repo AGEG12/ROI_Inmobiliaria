@@ -15,7 +15,7 @@ const addProperty = async (req, res) => {
                 deal, payment_periodicity, sales_price, rental_price,
                 state, city, zip_code, settlement, references,
                 constructed_meters, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes,
-                percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body.property;
+                percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body;
 
             const imagesFilename = req.files.map(file => file.filename);
             const newProperty = new Property({
@@ -109,7 +109,7 @@ const updateProperty = async (req, res) => {
             deal, payment_periodicity, sales_price, rental_price,
             state, city, zip_code, settlement, references,
             constructed_meters, number_bedrooms, number_bathrooms, cistern_capacity, garage_description, additional_notes,
-            percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body;
+            percentage_sale, amount_sale, percentage_rent, amount_rent, notes } = req.body.property;
 
         const updatedProperty = await Property.findByIdAndUpdate(
             propertyId,

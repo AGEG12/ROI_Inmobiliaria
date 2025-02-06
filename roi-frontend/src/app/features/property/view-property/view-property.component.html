@@ -1,141 +1,94 @@
-<div class="container my-5 p-4">
+<div *ngIf="property" class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="" class="btn btn-outline-secondary">Regresar al listado</a>
-        <div class="btn-group">
-            <button class="btn btn-primary">Editar propiedad</button>
-            <button class="btn btn-danger">Eliminar propiedad</button>
-            <button class="btn btn-success">Registrar transacción</button>
+        <a routerLink="/property-list" class="btn btn-outline-secondary">Regresar al listado</a>
+        <div *ngIf="!transactionId" class="btn-group">
+            <button [routerLink]="['/update-property', property._id]" class="btn btn-primary">Editar propiedad</button>
+            <button (click)="deleteProperty();" class="btn btn-danger">Eliminar propiedad</button>
+            <button *ngIf="property.status === 'Disponible'" [routerLink]="['/register-transaction', property._id]" class="btn btn-success">Registrar transacción</button>
+        </div>
+        <div *ngIf="transactionId" class="btn-group">
+            <button [routerLink]="['/view-transaction', transactionId]" class="btn btn-success">Ver transacción</button>
         </div>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Ver Propiedad</h1>
     <div class="row mb-4">
         <div class="row g-4 mb-4">
-            <div class="col-6 col-md-4 col-lg-3">
+            <div *ngFor="let image of property.images" class="col-6 col-md-4 col-lg-3">
                 <div class="image-container position-relative">
                     <div class="square">
-                        <img src="assets/fake/property1/1.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
+                        <img src="{{uploadsUrl+image}}"
+                            alt="property-image" class="img-fluid rounded">
                     </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
+                    <button (click)="deleteImage(image);" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
                         title="Eliminar imagen">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
             </div>
-            <div class="col-6 col-md-4 col-lg-3">
+            <!-- PREVISUALIZACIONES -->
+            <div *ngFor="let imagePreview of imagesPreview" class="col-6 col-md-4 col-lg-3">
                 <div class="image-container position-relative">
                     <div class="square">
-                        <img src="assets/fake/property1/2.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
+                        <img [src]="imagePreview"
+                            alt="property-image" class="img-fluid rounded">
                     </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
-                        title="Eliminar imagen">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="image-container position-relative">
-                    <div class="square">
-                        <img src="assets/fake/property1/3.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
-                    </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
-                        title="Eliminar imagen">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="image-container position-relative">
-                    <div class="square">
-                        <img src="assets/fake/property1/4.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
-                    </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
-                        title="Eliminar imagen">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="image-container position-relative">
-                    <div class="square">
-                        <img src="assets/fake/property1/5.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
-                    </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
-                        title="Eliminar imagen">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="image-container position-relative">
-                    <div class="square">
-                        <img src="assets/fake/property1/6.jpeg"
-                            alt="Imagen de la propiedad" class="img-fluid rounded">
-                    </div>
-                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
-                        title="Eliminar imagen">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
                 </div>
             </div>
             <!-- FORMULARIO UPLOAD IMAGES -->
             <div class="col-6 col-md-4 col-lg-3">
                 <div class="image-container position-relative">
-                    <form id="uploadForm" class="d-flex flex-column align-items-center justify-content-center">
+                    <form (submit)="addImages();" id="uploadForm" class="d-flex flex-column align-items-center justify-content-center">
                         <!-- Input file oculto -->
                         <label for="imageUpload" class="upload-label">
                             <i class="bi bi-cloud-upload-fill upload-icon"></i>
                             <span class="d-block mt-2">Subir Imágenes</span>
                         </label>
-                        <input type="file" id="imageUpload" class="d-none" multiple>
+                        <input (change)="onImagesSelected($event)" type="file" id="imageUpload" class="d-none" multiple>
                         <!-- Botón para cargar -->
-                        <button type="submit" class="btn btn-primary btn-sm mt-3">Cargar</button>
+                        <button *ngIf="imagesPreview.length" (click)="addImages();" type="button" class="btn btn-primary btn-sm mt-3">Cargar</button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-lg-12">
-            <h1 class="text-primary">¡Tu hogar de ensueño te espera en Residencial Ámbar! </h1>
-            <p class="text-muted">Descubre la comodidad y elegancia en esta casa de ensueño ubicada en el exclusivo fraccionamiento "Residencial Ámbar", en la Zona Norte poniente de Tuxtla Gutiérrez.</p>
-            <p><strong>Tipo de propiedad:</strong> Casa</p>
-            <p><strong>Dimensiones del terreno:</strong>15 x 12 m</p>
-            <p><strong>Clasificación del área social:</strong> Residencial</p>
+            <h1 class="text-primary">{{property.title}}</h1>
+            <p class="text-muted">{{property.description}}</p>
+            <p><strong>Tipo de propiedad: </strong>{{property.type_property}}</p>
+            <p><strong>Dimensiones del terreno: </strong>{{property.land_measurements}}</p>
+            <p><strong>Clasificación del área social: </strong>{{property.social_classification_area}}</p>
+            <p><strong>Status: </strong><span [class]="property.status === 'Disponible' ? 'badge bg-success' : 'badge bg-danger'">{{property.status}}</span></p>
         </div>
     </div>
     <div class="mb-4">
         <h2 class="h5">Oferta</h2>
-        <p><strong>Tipo de trato:</strong> Venta</p>
-        <p><strong>Precio de venta:</strong> $2500000 MXN</p>
-        <!-- <p><strong>Periodicidad del pago:</strong> Mensual</p> -->
-        <!-- <p><strong>Precio de renta:</strong> $15,000 MXN</p> -->
+        <p><strong>Tipo de trato: </strong>{{property.offer.deal}}</p>
+        <p *ngIf="property.offer.deal === 'Venta' || property.offer.deal === 'Venta o Renta'"><strong>Precio de venta: </strong>{{ formatCurrencyMXN(property.offer.sales_price) }}</p>
+        <p *ngIf="property.offer.deal === 'Renta' || property.offer.deal === 'Venta o Renta'"><strong>Periodicidad del pago: </strong>{{property.offer.payment_periodicity}}</p>
+        <p *ngIf="property.offer.deal === 'Renta' || property.offer.deal === 'Venta o Renta'"><strong>Precio de renta: </strong>{{ formatCurrencyMXN(property.offer.rental_price) }}</p>
     </div>
     <div class="mb-4">
         <h2 class="h5">Ubicación</h2>
-        <p><strong>Estado:</strong> Chiapas</p>
-        <p><strong>Ciudad:</strong> Tuxtla Gutiérez</p>
-        <p><strong>Código postal:</strong> 29030</p>
-        <p><strong>Asentamiento:</strong> Residencial Ámbar</p>
-        <p><strong>Referencias:</strong> Cerca de Plaza del Sol</p>
+        <p><strong>Estado: </strong>{{property.location.state}}</p>
+        <p><strong>Ciudad: </strong>{{property.location.city}}</p>
+        <p><strong>Código postal: </strong>{{property.location.zip_code}}</p>
+        <p><strong>Asentamiento: </strong>{{property.location.settlement}}</p>
+        <p><strong>Referencias: </strong>{{property.location.references}}</p>
     </div>
     <div class="mb-4">
         <h2 class="h5">Características del Inmueble</h2>
-        <p><strong>Metros de construcción:</strong> 165 m<sup>2</sup></p>
-        <p><strong>Número de habitaciones:</strong> 3</p>
-        <p><strong>Número de baños:</strong> 4</p>
-        <p><strong>Capacidad de la cisterna:</strong> 5000 L</p>
-        <p><strong>Descripción del garage:</strong>Techado para 2 autos</p>
-        <p><strong>Notas adicionales:</strong> Con jardín lateral amplio.</p>
+        <p *ngIf="property.features.constructed_meters"><strong>Metros de construcción: </strong>{{property.features.constructed_meters}} m<sup>2</sup></p>
+        <p *ngIf="property.features.number_bedrooms"><strong>Número de habitaciones: </strong>{{property.features.number_bedrooms}}</p>
+        <p *ngIf="property.features.number_bathrooms"><strong>Número de baños: </strong>{{property.features.number_bathrooms}}</p>
+        <p *ngIf="property.features.cistern_capacity"><strong>Capacidad de la cisterna: </strong>{{property.features.cistern_capacity}} L</p>
+        <p *ngIf="property.features.garage_description"><strong>Descripción del garage: </strong>{{property.features.garage_description}}</p>
+        <p><strong>Notas adicionales: </strong>{{property.features.additional_notes}}</p>
     </div>
     <div class="mb-4">
         <h2 class="h5">Comisión</h2>
-        <p><strong>Porcentaje sobre venta:</strong> 5%</p>
-<!--         <p><strong>Monto sobre venta:</strong> $60,000 MXN</p>
-        <p><strong>Porcentaje sobre renta:</strong> 10%</p>
-        <p><strong>Monto sobre renta:</strong> $1,500 MXN</p> -->
-        <p><strong>Notas:</strong> Comisión negociada según contrato.</p>
+        <p *ngIf="property.agreed_commission.percentage_sale"><strong>Porcentaje sobre venta: </strong>{{property.agreed_commission.percentage_sale}}%</p>
+        <p *ngIf="property.agreed_commission.amount_sale"><strong>Monto sobre venta: </strong>{{ formatCurrencyMXN(property.agreed_commission.amount_sale) }}</p>
+        <p *ngIf="property.agreed_commission.percentage_rent"><strong>Porcentaje sobre renta: </strong>{{property.agreed_commission.percentage_rent}}%</p>
+        <p *ngIf="property.agreed_commission.amount_rent"><strong>Monto sobre renta: </strong>{{ formatCurrencyMXN(property.agreed_commission.amount_rent) }}</p>
+        <p><strong>Notas: </strong>{{property.agreed_commission.notes}}</p>
     </div>
 </div>

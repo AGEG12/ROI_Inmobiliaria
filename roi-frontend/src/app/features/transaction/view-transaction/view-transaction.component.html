@@ -1,33 +1,37 @@
-<div class="container my-5 p-4">
+<div *ngIf="transaction" class="container my-5 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="" class="btn btn-outline-secondary">Regresar al listado</a>
+        <a routerLink="/transaction-list" class="btn btn-outline-secondary">Regresar al listado</a>
         <div class="btn-group">
-            <button class="btn btn-primary">Editar transacción</button>
-            <button class="btn btn-danger">Eliminar transacción</button>
-            <button class="btn btn-warning">Ver propiedad asociada</button>
+            <button [routerLink]="['/update-transaction', transactionId]" class="btn btn-primary">Editar
+                transacción</button>
+            <button (click)="deleteTransaction();" class="btn btn-danger">Eliminar transacción</button>
+            <button [routerLink]="['/view-property', transaction.fk_property]" class="btn btn-warning">Ver propiedad
+                asociada</button>
         </div>
     </div>
     <h1 class="h3 text-muted text-center fw-bold mb-3">Ver Transacción</h1>
     <div class="mb-4">
         <h2 class="h5">Información de la Transacción</h2>
-        <p><strong>Tipo de trato:</strong> Venta</p>
-<!--         <p><strong>Periodicidad del pago:</strong> Mensual</p> -->
-        <p><strong>Monto de la operación:</strong> $2500000 MXN</p>
-        <p><strong>Comisión cobrada:</strong> $125000 MXN</p>
-        <p><strong>Fecha de la operación:</strong> 2024-10-29</p>
+        <p><strong>Tipo de trato: </strong>{{transaction.deal}}</p>
+        <p *ngIf="transaction.deal === 'Renta'"><strong>Periodicidad del pago:
+            </strong>{{transaction.payment_periodicity}}</p>
+        <p><strong>Monto de la operación: </strong>{{ formatCurrencyMXN(transaction.amount) }}</p>
+        <p><strong>Comisión cobrada: </strong>{{ formatCurrencyMXN(transaction.commission) }}</p>
+        <p><strong>Fecha de la operación: </strong>{{transaction.date.substr(0,10)}}</p>
     </div>
     <div class="mb-4">
         <h2 class="h5">Cargar Documento PDF</h2>
-        <form>
+        <form [formGroup]="uploadDocumentForm" (submit)="uploadDocument();">
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="nombreDocumento" class="form-label">Nombre del documento</label>
-                    <input type="text" id="nombreDocumento" class="form-control"
+                    <input formControlName="name" type="text" id="nombreDocumento" class="form-control"
                         placeholder="Ej: Contrato de compra-venta">
                 </div>
                 <div class="col-md-6">
                     <label for="archivoPDF" class="form-label">Archivo PDF</label>
-                    <input type="file" id="archivoPDF" class="form-control" accept="application/pdf">
+                    <input (change)="onFileSelected($event)" type="file" id="archivoPDF" class="form-control"
+                        accept="application/pdf">
                 </div>
             </div>
             <button type="submit" class="btn btn-success mt-3">Cargar</button>
@@ -35,7 +39,7 @@
     </div>
 
     <!-- Documentos de la transacción -->
-    <div class="mb-4">
+    <div *ngIf="transaction.documents[0]" class="mb-4">
         <h2 class="h5">Documentos de la Transacción</h2>
         <table class="table table-striped table-hover">
             <thead>
@@ -47,25 +51,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Contrato de compra-venta</td>
-                    <td>PDF</td>
-                    <td>20/11/2024</td>
+                <tr *ngFor="let document of transaction.documents">
+                    <td>{{document.name}}</td>
+                    <td>{{document.filename.split('.').pop()}}</td>
+                    <td>{{document.upload_date.substr(0,10)}}</td>
                     <td>
                         <div class="btn-group">
-                            <button class="btn btn-info btn-sm">Ver</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Factura</td>
-                    <td>PDF</td>
-                    <td>21/11/2024</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-info btn-sm">Ver</button>
-                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                            <button data-bs-toggle="modal" data-bs-target="#pdfModal"
+                                (click)="showDocument(document.filename)" class="btn btn-info btn-sm">Ver</button>
+                            <button (click)="deleteDocument(document.filename);"
+                                class="btn btn-danger btn-sm">Eliminar</button>
                         </div>
                     </td>
                 </tr>
@@ -73,4 +68,24 @@
         </table>
     </div>
 </div>
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfModalLabel">Visualización de PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe [src]="sanitizedPdfUrl" width="100%" height="500px" style="border: none;">
+                    </iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{pdfUrl}}" target="_blank" class="btn btn-warning">Abrir en pestaña</a>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

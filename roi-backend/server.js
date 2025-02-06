@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const path = require('path');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -23,7 +24,7 @@ app.use('/api/v1/properties', require('./routes/propertyRoutes'));
 app.use('/api/v1/transactions', require('./routes/transactionRoutes'));
 
 // Acceder a /uploads como ruta pública
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads/', express.static(path.join(__dirname, 'uploads')));
 
 // Puerto
 const PORT = process.env.PORT || 3000;
